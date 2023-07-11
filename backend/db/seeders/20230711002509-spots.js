@@ -1,11 +1,9 @@
 'use strict';
 const { Spot } = require('../models')
-
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -47,21 +45,11 @@ module.exports = {
         price: 700,
       },
     ], { validate: true })
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
   },
 
   async down(queryInterface, Sequelize) {
-    options.tableName = 'Spots';
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete(options, {
+    return queryInterface.bulkDelete('Spots', {
       address: { [Op.in]: ["123 Disney Lane", "123 App Lane", "123 Pixar Lane"] }
     }, {});
   }
