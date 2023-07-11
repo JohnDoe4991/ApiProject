@@ -20,7 +20,7 @@ module.exports = {
         lng: -122.4730327,
         name: "App Academy",
         description: "Place where web developers are created",
-        price: 123,
+        price: 123.00,
       },
       {
         ownerId: 2,
@@ -32,7 +32,7 @@ module.exports = {
         lng: -122.4730327,
         name: "Neverland",
         description: "Magical place",
-        price: 300,
+        price: 300.00,
       },
       {
         ownerId: 3,
@@ -44,7 +44,7 @@ module.exports = {
         lng: -127.4730327,
         name: "Zombieland",
         description: "Feed your hunger",
-        price: 700,
+        price: 700.00,
       },
     ], { validate: true })
     /**
