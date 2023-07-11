@@ -38,11 +38,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-<<<<<<< HEAD
-    options.tableName = 'SpotImages'
-=======
     options.tableName = "SpotImages"
->>>>>>> dev
     await queryInterface.dropTable(options);
   }
 };
