@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { Spot, User, Review, SpotImage, sequelize } = require("../../db/models");
+const { Spot, User, Review, SpotImage, sequelize, ReviewImage } = require("../../db/models");
 
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
@@ -51,7 +51,6 @@ const validateSpot = [
 //Get Spots
 
 router.get("/", async (req, res) => {
-    const userId = req.user.id;
     const spots = await Spot.findAll({
 
         include: [
@@ -245,6 +244,42 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
 
     return res.json({ message: "Successfully deleted" })
 });
+
+
+//Get all Reviews by a Spot's id
+router.get('/:spotId/reviews', async (req, res) => {
+    const options = {
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            },
+        ],
+        where: { spotId: req.params.spotId }
+    };
+    const reviews = await Review.findAll(options);
+
+    // Check if any reviews are found
+    if (reviews.length === 0) {
+        return res.status(404).json({ message: 'Spot not found' });
+    }
+
+    for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i].toJSON();
+        if (review.Spot) {
+            reviews[i] = review;
+            review.Spot.previewImage = review.Spot.SpotImages[0].url;
+            delete review.Spot.SpotImages;
+        }
+    }
+
+    res.json({ Reviews: reviews });
+});
+
 
 
 const processSpots = (spots) => {
