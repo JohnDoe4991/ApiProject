@@ -20,6 +20,14 @@ const validateReview = [
     handleValidationErrors
 ];
 
+const authorizationCatch = (err, req, res, next) => {
+    res.status(403)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            message: 'Forbidden'
+        })
+}
+
 //Get all reviews by current user
 router.get('/current', requireAuth, async (req, res) => {
     const reviewList = await Review.findAll({
@@ -86,7 +94,9 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     }
 
     if (review.userId !== req.user.id) {
-        res.status(403).send();
+        res.status(403).json({
+            message: 'Forbidden'
+        });
         return;
     }
 
@@ -109,30 +119,37 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 //Edit a review
 router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
     const { review, stars } = req.body;
-    // const { spotId } = req.params;
+
     const reviewId = req.params.reviewId;
-    const reviews = await Review.findOne({ where: { id: reviewId, userId: req.user.id } });
+    const reviews = await Review.findOne({ where: { id: reviewId } });
     if (!reviews) {
         return res.status(404).json({ message: "Review couldn't be found" });
+    } else if (reviews && reviews.userId !== req.user.id) {
+        next(err)
     }
     const updatedReview = await reviews.update({ review, stars });
     res.json(updatedReview);
-});
+}, authorizationCatch);
 
 // Delete a review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
     const reviewId = req.params.reviewId;
     const { user } = req;
+    const reviewOwner = await Review.findByPk(reviewId)
     const deletedReview = await Review.destroy({
         where: {
             id: reviewId, userId: req.user.id
         }
     })
+    if (!reviewOwner) return res.status(404).json({ message: " Review couldn't be found" })
+    else if (deletedReview) {
+        return res.status(200).json({ message: "Successfully deleted" })
+    } else if (reviewOwner && reviewOwner.reviewId !== req.user.id) {
+        next(err)
+    }
 
-    if (!deletedReview) return res.status(404).json({ message: " Review couldn't be found" })
 
-    return res.json({ message: "Successfully deleted" })
-});
+}, authorizationCatch);
 
 
 

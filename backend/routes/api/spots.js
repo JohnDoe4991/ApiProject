@@ -57,6 +57,14 @@ const validateReview = [
     handleValidationErrors
 ];
 
+const authorizationCatch = (err, req, res, next) => {
+    res.status(403)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            message: 'Forbidden'
+        })
+}
+
 
 //Get Spots
 
@@ -213,47 +221,57 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
     const { url, preview } = req.body;
     const spotId = req.params.spotId;
 
-    const spot = await Spot.findOne({ where: { id: spotId, ownerId: req.user.id } });
+    const spot = await Spot.findOne({ where: { id: spotId } });
 
-    if (spot) {
+    if (spot && spot.ownerId === req.user.id) {
         const spotImage = await SpotImage.create({ spotId, url, preview });
 
         const { updatedAt, createdAt, ...response } = spotImage.toJSON();
         delete response.spotId;
 
         return res.json(response);
-    } else {
+    } else if (!spot) {
         return res.status(404).json({ message: "Spot couldn't be found" });
+    } else if (spot && spot.ownerId !== req.user.id) {
+        next(err)
     }
-});
+
+}, authorizationCatch);
 
 // Edit a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     // const { spotId } = req.params;
     const spotId = req.params.spotId;
-    const spot = await Spot.findOne({ where: { id: spotId, ownerId: req.user.id } });
+    const spot = await Spot.findOne({ where: { id: spotId } });
     if (!spot) {
         return res.status(404).json({ message: "Spot couldn't be found" });
+    } else if (spot && spot.ownerId !== req.user.id) {
+        next(err)
     }
     const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
     res.json(updatedSpot);
-});
+}, authorizationCatch);
 
 //Delete a spot
 router.delete('/:spotId', requireAuth, async (req, res) => {
     const spotId = req.params.spotId;
     const { user } = req;
+    const findOwner = await Spot.findByPk(spotId)
     const deletedSpot = await Spot.destroy({
         where: {
             id: spotId, ownerId: req.user.id
         }
     })
 
-    if (!deletedSpot) return res.status(404).json({ message: "Spot couldn't be found" })
+    if (!findOwner) return res.status(404).json({ message: "Spot couldn't be found" })
+    else if (deletedSpot) {
+        return res.status(200).json({ message: "Successfully deleted" })
+    } else if (findOwner && findOwner.ownerId !== req.user.id) {
+        next(err)
+    }
 
-    return res.json({ message: "Successfully deleted" })
-});
+}, authorizationCatch);
 
 
 //Get all Reviews by a Spot's id
