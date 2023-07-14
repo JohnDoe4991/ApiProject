@@ -130,9 +130,9 @@ router.get("/", async (req, res) => {
 
 //by current User
 router.get('/current', requireAuth, async (req, res) => {
-    // const userId = req.user.id;
+    const userId = req.user.id;
     const spots = await Spot.findAll({
-        // where: { ownerId: userId },
+        where: { ownerId: userId },
         include: [
             { model: Review, attributes: ["stars"] },
             { model: SpotImage, attributes: ["url", "preview"] }
@@ -327,8 +327,6 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
     if (spot) {
         const newReview = await Review.create({ userId, spotId, review, stars });
 
-        // const { updatedAt, createdAt, ...response } = review.toJSON();
-        // delete response.spotId;
 
         return res.json(newReview);
 
@@ -339,6 +337,45 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
     }
 
 });
+
+//Get all Bookings for a Spot based on the Spot's id
+router.get('/:spotId/bookings', requireAuth, async (req, res) => {
+    if(req.user.id === req.spot.ownerId) {
+    const options = {
+        include: [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            },
+        ],
+        where: { spotId: req.params.spotId }
+    };
+    const reviews = await Review.findAll(options);
+
+    // Check if any reviews are found
+    if (reviews.length === 0) {
+        return res.status(404).json({ message: 'Spot not found' });
+    }
+
+    for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i].toJSON();
+        if (review.Spot) {
+            reviews[i] = review;
+            review.Spot.previewImage = review.Spot.SpotImages[0].url;
+            delete review.Spot.SpotImages;
+        }
+    }
+
+    res.json({ Reviews: reviews });
+} else if {
+    
+}
+});
+
 
 
 
