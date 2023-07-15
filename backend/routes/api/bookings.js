@@ -77,19 +77,59 @@ router.get("/current", requireAuth, async (req, res) => {
 
 //Edit a Booking
 router.put("/:bookingId", requireAuth, async (req, res, next) => {
-    const bookingId = req.params.bookingId;
     const { startDate, endDate } = req.body;
+
+    const bookingId = req.params.bookingId;
+    const spotId = req.params.spotId;
+    const userId = req.user.id;
+
     const booking = await Booking.findByPk(bookingId);
+    if (!booking) return catchErrors(404, "Booking couldn't be found", {}, res);
+
+
+    const checkingPreviousStartDate = await Booking.findAll({
+        where: {
+            spotId: booking.spotId,
+            startDate: { [Op.between]: [startDate, endDate] }
+        }
+    })
+    const checkingPreviousEndDate = await Booking.findAll({
+        where: {
+            spotId: booking.spotId,
+            endDate: { [Op.between]: [startDate, endDate] }
+        }
+    })
     const currentDate = new Date();
 
-    if (!booking) return catchErrors(404, "Booking couldn't be found", {}, res);
+
     if (booking.userId != req.user.id) return catchErrors(403, 'Forbidden', {}, res);
     if (new Date(booking.endDate) < currentDate) return catchErrors(403, "Past bookings can't be modified", {}, res);
     if (endDate < startDate) return catchErrors(400, 'Bad Request', { errors: { endDate: "endDate cannot come before startDate" } }, res);
 
-    const updatedBooking = await booking.update({ startDate, endDate });
-    return res.json(updatedBooking);
+
+
+
+    if (checkingPreviousStartDate.length > 0 && checkingPreviousEndDate.length === 0) {
+        return catchErrors(403, 'Sorry, this spot is already booked for the specified dates', { errors: { endDate: "End date conflicts with an existing booking" } }, res);
+    }
+    else if (checkingPreviousStartDate.length === 0 && checkingPreviousEndDate.length > 0) {
+        return catchErrors(403, 'Sorry, this spot is already booked for the specified dates', { errors: { startDate: "Start date conflicts with an existing booking" } }, res);
+    }
+    else if (checkingPreviousStartDate.length === 0 && checkingPreviousEndDate.length === 0) {
+        const updatedBooking = await booking.update({ startDate, endDate });
+        return res.json(updatedBooking);
+    }
+    else {
+        return catchErrors(403, 'Sorry, this spot is already booked for the specified dates', { errors: { startDate: "Start date conflicts with an existing booking", endDate: "End date conflicts with an existing booking" } }, res);
+    }
 });
+
+router.delete('/:bookingid', requireAuth, async (req, res) => {
+    const bookingId = req.params.bookingId;
+    const { user } = req;
+    
+
+})
 
 
 
