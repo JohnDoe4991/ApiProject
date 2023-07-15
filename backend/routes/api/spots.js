@@ -8,6 +8,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const spot = require("../../db/models/spot");
 const { json } = require("sequelize");
+const { Op } = require('sequelize');
 
 
 const validateSpot = [
@@ -380,7 +381,7 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
     const userId = req.user.id;
 
 
-    // const oldBooking = await Booking.findOne({ where: { userId: req.user.id, spotId: req.params.spotId } });
+
     const oldBooking = await Booking.findOne({
         where: {
             spotId: spotId,

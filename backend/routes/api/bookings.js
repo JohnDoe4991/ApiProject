@@ -9,6 +9,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 const spot = require("../../db/models/spot");
 const { json } = require("sequelize");
 const { application } = require("express");
+const { Op } = require('sequelize');
 
 
 
@@ -29,6 +30,10 @@ const validateBooking = [
         .withMessage("endDate cannot come before startDate"),
     handleValidationErrors,
 ];
+
+const catchErrors = (statusCode, message, data = {}, res) => {
+    return res.status(statusCode).json({ message, ...data });
+};
 
 ///Get all bookings
 router.get("/current", requireAuth, async (req, res) => {
@@ -71,68 +76,20 @@ router.get("/current", requireAuth, async (req, res) => {
 });
 
 //Edit a Booking
-router.put("/:bookingId", async (req, res) => {
+router.put("/:bookingId", requireAuth, async (req, res, next) => {
     const bookingId = req.params.bookingId;
     const { startDate, endDate } = req.body;
     const booking = await Booking.findByPk(bookingId);
+    const currentDate = new Date();
+
+    if (!booking) return catchErrors(404, "Booking couldn't be found", {}, res);
+    if (booking.userId != req.user.id) return catchErrors(403, 'Forbidden', {}, res);
+    if (new Date(booking.endDate) < currentDate) return catchErrors(403, "Past bookings can't be modified", {}, res);
+    if (endDate < startDate) return catchErrors(400, 'Bad Request', { errors: { endDate: "endDate cannot come before startDate" } }, res);
+
     const updatedBooking = await booking.update({ startDate, endDate });
-
-    if (booking && booking.userId !== req.user.id) {
-        return res.status(403).json({
-            message: "Forbidden"
-        })
-    }
-    if (!booking) return res.status(404).json({ message: "Booking couldn't be found" });
-    let currentDate = new Date();
-    if (new Date(booking.endDate).toISOString() < currentDate) {
-        return res.status(403).json({ message: "Past bookings can't be modified" });
-    }
-    if (endDate < startDate) {
-        return res.status(400).json({
-            message: "Bad Request",
-            errors: {
-                endDate: "endDate cannot come before startDate"
-            }
-        })
-    }
-    // const oldBooking = await Booking.findOne({
-    //     where: {
-    //         spotId: spotId,
-    //         [Op.or]: [
-    //             {
-    //                 startDate: {
-    //                     [Op.between]: [startDate, endDate],
-    //                 },
-    //             },
-    //             {
-    //                 endDate: {
-    //                     [Op.between]: [startDate, endDate],
-    //                 },
-    //             },
-    //             {
-    //                 [Op.and]: [
-    //                     { startDate: { [Op.lte]: startDate } },
-    //                     { endDate: { [Op.gte]: endDate } },
-    //                 ],
-    //             },
-    //         ],
-    //     },
-    // });
-    // if (oldBooking) {
-    //     return res.status(403).json({
-    //         message: "Sorry, this spot is already booked for the specified dates",
-    //         errors: {
-    //             startDate: "Start date conflicts with an existing booking",
-    //             endDate: "End date conflicts with an existing booking"
-    //         }
-    //     });
-    // }
-
-
-
-    res.json(updatedBooking);
+    return res.json(updatedBooking);
 });
-
 
 
 
