@@ -20,6 +20,16 @@ const authorizationCatch = (err, req, res, next) => {
         })
 }
 
+const validateBooking = [
+    check("startDate")
+        .exists({ checkFalsy: true }),
+    // .withMessage("Review text is required"),
+    check("endDate")
+        .isAfter(new Date().toISOString())
+        .withMessage("endDate cannot come before startDate"),
+    handleValidationErrors,
+];
+
 ///Get all bookings
 router.get("/current", requireAuth, async (req, res) => {
     const allBookings = await Booking.findAll({
@@ -57,7 +67,70 @@ router.get("/current", requireAuth, async (req, res) => {
         };
     });
 
-    res.json({Bookings: bookings});
+    res.json({ Bookings: bookings });
+});
+
+//Edit a Booking
+router.put("/:bookingId", async (req, res) => {
+    const bookingId = req.params.bookingId;
+    const { startDate, endDate } = req.body;
+    const booking = await Booking.findByPk(bookingId);
+    const updatedBooking = await booking.update({ startDate, endDate });
+
+    if (booking && booking.userId !== req.user.id) {
+        return res.status(403).json({
+            message: "Forbidden"
+        })
+    }
+    if (!booking) return res.status(404).json({ message: "Booking couldn't be found" });
+    let currentDate = new Date();
+    if (new Date(booking.endDate).toISOString() < currentDate) {
+        return res.status(403).json({ message: "Past bookings can't be modified" });
+    }
+    if (endDate < startDate) {
+        return res.status(400).json({
+            message: "Bad Request",
+            errors: {
+                endDate: "endDate cannot come before startDate"
+            }
+        })
+    }
+    // const oldBooking = await Booking.findOne({
+    //     where: {
+    //         spotId: spotId,
+    //         [Op.or]: [
+    //             {
+    //                 startDate: {
+    //                     [Op.between]: [startDate, endDate],
+    //                 },
+    //             },
+    //             {
+    //                 endDate: {
+    //                     [Op.between]: [startDate, endDate],
+    //                 },
+    //             },
+    //             {
+    //                 [Op.and]: [
+    //                     { startDate: { [Op.lte]: startDate } },
+    //                     { endDate: { [Op.gte]: endDate } },
+    //                 ],
+    //             },
+    //         ],
+    //     },
+    // });
+    // if (oldBooking) {
+    //     return res.status(403).json({
+    //         message: "Sorry, this spot is already booked for the specified dates",
+    //         errors: {
+    //             startDate: "Start date conflicts with an existing booking",
+    //             endDate: "End date conflicts with an existing booking"
+    //         }
+    //     });
+    // }
+
+
+
+    res.json(updatedBooking);
 });
 
 
