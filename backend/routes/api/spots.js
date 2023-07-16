@@ -4,7 +4,7 @@ const router = express.Router();
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
 const { Spot, User, Review, SpotImage, sequelize, ReviewImage, Booking } = require("../../db/models");
 
-const { check } = require("express-validator");
+const { check, validationResult } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const spot = require("../../db/models/spot");
 const { json } = require("sequelize");
@@ -48,6 +48,42 @@ const validateSpot = [
     handleValidationErrors
 ];
 
+const validateQueryParams = [
+    check('page')
+        .optional()
+        .isInt({ min: 1, max: 10 })
+        .withMessage('Page must be an integer between 1 and 10'),
+    check('size')
+        .optional()
+        .isInt({ min: 1, max: 20 })
+        .withMessage('Size must be an integer between 1 and 20'),
+    check('minLat')
+        .optional()
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Minimum latitude is invalid'),
+    check('maxLat')
+        .optional()
+        .isFloat({ min: -90, max: 90 })
+        .withMessage('Maximum latitude is invalid'),
+    check('minLng')
+        .optional()
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Minimum longitude is invalid'),
+    check('maxLng')
+        .optional()
+        .isFloat({ min: -180, max: 180 })
+        .withMessage('Maximum longitude is invalid'),
+    check('minPrice')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Minimum price must be greater than or equal to 0'),
+    check('maxPrice')
+        .optional()
+        .isFloat({ min: 0 })
+        .withMessage('Maximum price must be greater than or equal to 0'),
+    handleValidationErrors
+];
+
 const validateReview = [
     check('review')
         .exists({ checkFalsy: true })
@@ -76,28 +112,19 @@ const authorizationCatch = (err, req, res, next) => {
         })
 }
 
+const queryParamValidationErrors = (err, req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorResponse = {
+            message: 'Bad Request',
+            errors: err.errors,
+        };
 
-//Get Spots
+        return res.status(400).json(errorResponse);
+    }
 
-router.get("/", async (req, res) => {
-    const spots = await Spot.findAll({
-
-        include: [
-            {
-                model: Review,
-                attributes: ['stars']
-            },
-            {
-                model: SpotImage,
-                attributes: ['url', 'preview']
-            },
-        ]
-    });
-
-    let spotsList = processSpots(spots)
-    res.json(spotsList);
-
-})
+    next();
+};
 
 
 
@@ -238,10 +265,10 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
     })
 
     if (!findOwner) return res.status(404).json({ message: "Spot couldn't be found" })
-    else if (deletedSpot) {
-        return res.status(200).json({ message: "Successfully deleted" })
-    } else if (findOwner && findOwner.ownerId !== req.user.id) {
+    else if (findOwner && findOwner.ownerId !== req.user.id) {
         next(err)
+    } else if (deletedSpot) {
+        return res.status(200).json({ message: "Successfully deleted" })
     }
 
 }, authorizationCatch);
@@ -410,41 +437,63 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
 
 }, authorizationCatch);
 
+//Get Spots
+
+router.get("/", validateQueryParams, queryParamValidationErrors, async (req, res) => {
+
+    let { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
 
+    const spots = await Spot.findAll({
 
+        ...getPagination(req.query),
+        include: [
+            {
+                model: Review,
+                attributes: ['stars']
+            },
+            {
+                model: SpotImage,
+                attributes: ['url', 'preview']
+            },
+        ]
+    });
 
+    let spotsList = processSpots(spots);
+    return res.json({ Spots: spotsList, page, size });
+});
 
+//Helper functions
 const processSpots = (spots) => {
 
-    const processedSpots = spots.map((spot) => {
+    return spots.map((spot) => {
 
-        const spotJSON = spot.toJSON();
+        spot = spot.toJSON();
 
-        const avgRating = spotJSON.Reviews.reduce((sum, review) => sum + review.stars, 0) / spotJSON.Reviews.length;
+        const avgRating = spot.Reviews.reduce((sum, review) => sum + review.stars, 0) / spot.Reviews.length;
 
-        const previewImage = spotJSON.SpotImages.find((image) => image.preview === true);
+        const previewImage = spot.SpotImages.find((image) => image.preview === true);
 
-        spotJSON.avgRating = avgRating || 0;
-        spotJSON.previewImage = previewImage ? previewImage.url : "No spot image found";
+        spot.avgRating = avgRating || 0;
+        spot.previewImage = previewImage ? previewImage.url : "No spot image found";
 
-        delete spotJSON.Reviews;
-        delete spotJSON.SpotImages;
+        delete spot.Reviews;
+        delete spot.SpotImages;
 
-        return spotJSON;
-    });
-
-
-
-    return processedSpots;
-}
-
-function respondWithSpot404(res) {
-    res.status(404).json({
-        "message": "Spot couldn't be found",
+        return spot;
     });
 }
 
+const getPagination = (queryParams) => {
+    let { page, size } = queryParams;
+
+    page = page === undefined ? 1 : parseInt(page);
+    size = size === undefined ? 20 : parseInt(size);
+    const limit = parseInt(size, 20);
+    const offset = (parseInt(page, 20) - 1) * limit;
+
+    return { limit, offset };
+};
 
 
 

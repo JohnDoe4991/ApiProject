@@ -17,31 +17,28 @@ const authorizationCatch = (err, req, res, next) => {
         .json({
             message: 'Forbidden'
         })
-}
+};
 
-
-// Delete Spot Image
 router.delete('/:imageId', requireAuth, async (req, res) => {
     const imageId = req.params.imageId;
     const { user } = req;
 
-    const findSpotImage = await SpotImage.findOne({
-      where: { id: imageId },
-      include: [
-        {
-          model: Spot,
-          attributes: ['ownerId'],
-        },
-      ]
+    const findReviewImage = await ReviewImage.findOne({
+        where: { id: imageId },
+        include: [
+            {
+                model: Review,
+                attributes: ['userId'],
+            },
+        ]
     })
 
-    if(!findSpotImage) return res.status(404).json({ message: "Spot Image couldn't be found" })
-    if(findSpotImage && findSpotImage.Spot.ownerId !== req.user.id) next(err)
-    const deletedSpotImage = await SpotImage.destroy({ where: { id: imageId } })
-    if(deletedSpotImage) return res.status(200).json({ message: "Successfully deleted" })
+    if (!findReviewImage) return res.status(404).json({ message: "Review Image couldn't be found" })
+    if (findReviewImage && findReviewImage.Review.userId !== req.user.id) next(err)
+    const deletedReviewImage = await ReviewImage.destroy({ where: { id: imageId } })
+    if (deletedReviewImage) return res.status(200).json({ message: "Successfully deleted" })
 
-  }, authorizationCatch);
-
+}, authorizationCatch);
 
 
 
