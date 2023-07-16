@@ -13,14 +13,6 @@ const { Op } = require('sequelize');
 
 
 
-const authorizationCatch = (err, req, res, next) => {
-    res.status(403)
-        .setHeader('Content-Type', 'application/json')
-        .json({
-            message: 'Forbidden'
-        })
-}
-
 const validateBooking = [
     check("startDate")
         .exists({ checkFalsy: true }),

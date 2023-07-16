@@ -11,7 +11,7 @@ const { json } = require("sequelize");
 const { application } = require("express");
 const { Op } = require('sequelize');
 
-const authorizationCatch = (err, req, res, next) => {
+const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
         .setHeader('Content-Type', 'application/json')
         .json({
@@ -40,7 +40,7 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
     const deletedSpotImage = await SpotImage.destroy({ where: { id: imageId } })
     if(deletedSpotImage) return res.status(200).json({ message: "Successfully deleted" })
 
-  }, authorizationCatch);
+  }, authMeAuthMe);
 
 
 

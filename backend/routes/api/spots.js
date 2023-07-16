@@ -104,7 +104,7 @@ const validateBooking = [
     handleValidationErrors,
 ];
 
-const authorizationCatch = (err, req, res, next) => {
+const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
         .setHeader('Content-Type', 'application/json')
         .json({
@@ -112,7 +112,7 @@ const authorizationCatch = (err, req, res, next) => {
         })
 }
 
-const queryParamValidationErrors = (err, req, res, next) => {
+const queryParm = (err, req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorResponse = {
@@ -236,7 +236,7 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
         next(err)
     }
 
-}, authorizationCatch);
+}, authMeAuthMe);
 
 // Edit a spot
 router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
@@ -251,7 +251,7 @@ router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
     }
     const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
     res.json(updatedSpot);
-}, authorizationCatch);
+}, authMeAuthMe);
 
 //Delete a spot
 router.delete('/:spotId', requireAuth, async (req, res) => {
@@ -271,7 +271,7 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
         return res.status(200).json({ message: "Successfully deleted" })
     }
 
-}, authorizationCatch);
+}, authMeAuthMe);
 
 
 //Get all Reviews by a Spot's id
@@ -435,11 +435,11 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
 
     }
 
-}, authorizationCatch);
+}, authMeAuthMe);
 
 //Get Spots
 
-router.get("/", validateQueryParams, queryParamValidationErrors, async (req, res) => {
+router.get("/", validateQueryParams, queryParm, async (req, res) => {
 
     let { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 

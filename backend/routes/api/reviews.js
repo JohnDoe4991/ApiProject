@@ -20,7 +20,7 @@ const validateReview = [
     handleValidationErrors
 ];
 
-const authorizationCatch = (err, req, res, next) => {
+const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
         .setHeader('Content-Type', 'application/json')
         .json({
@@ -129,7 +129,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
     }
     const updatedReview = await reviews.update({ review, stars });
     res.json(updatedReview);
-}, authorizationCatch);
+}, authMeAuthMe);
 
 // Delete a review
 router.delete('/:reviewId', requireAuth, async (req, res) => {
@@ -149,7 +149,7 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     }
 
 
-}, authorizationCatch);
+}, authMeAuthMe);
 
 
 
