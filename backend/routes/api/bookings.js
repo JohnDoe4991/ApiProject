@@ -35,6 +35,7 @@ const catchErrors = (statusCode, message, data = {}, res) => {
     return res.status(statusCode).json({ message, ...data });
 };
 
+
 ///Get all bookings
 router.get("/current", requireAuth, async (req, res) => {
     const allBookings = await Booking.findAll({
@@ -124,12 +125,21 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
     }
 });
 
-router.delete('/:bookingid', requireAuth, async (req, res) => {
+//Delete a Booking
+router.delete('/:bookingId', requireAuth, async (req, res, next) => {
     const bookingId = req.params.bookingId;
     const { user } = req;
-    
+    const bookingOwner = await Booking.findByPk(bookingId)
+    const currentDate = new Date().toISOString()
 
-})
+    if (!bookingOwner) return catchErrors(404, "Booking couldn't be found", {}, res);
+    if (bookingOwner.userId != req.user.id) return catchErrors(403, 'Forbidden', {}, res);
+    else if (new Date(bookingOwner.startDate).toISOString() < currentDate) return catchErrors(403, "Bookings that have been started can't be deleted", {}, res);
+    else {
+        const bookedReview = await Booking.destroy({ where: { id: bookingId, userId: req.user.id } })
+        if (bookedReview) return res.status(200).json({ message: "Successfully deleted" })
+    }
+});
 
 
 

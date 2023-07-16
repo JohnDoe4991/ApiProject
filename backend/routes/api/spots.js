@@ -98,44 +98,6 @@ router.get("/", async (req, res) => {
     res.json(spotsList);
 
 })
-// router.get('/', async (req, res) => {
-//     const spots = await Spot.findAll({
-//         include: [
-//             {
-//                 model: Review
-//             },
-//             {
-//                 model: SpotImage
-//             },
-//         ]
-//     })
-
-// let spotsList = [];
-// spots.forEach(spot => {
-//     spotsList.push(spot.toJSON())
-// })
-
-// spotsList.forEach((ele) => {
-//     let counter = 0;
-//     let total = 0;
-
-//     ele.Reviews.forEach((review) => {
-//         counter += 1;
-//         total += review.stars;
-//     })
-
-//     let image
-//     ele.SpotImages.forEach((spotImage) => {
-//         image = spotImage.url
-//     });
-
-//     const avgRating = total / counter;
-//     const previewImage = image
-//     ele.avgRating = avgRating;
-//     ele.previewImage = previewImage
-//     delete ele.Reviews
-//     delete ele.SpotImages
-// });
 
 
 
@@ -352,7 +314,9 @@ router.post('/:spotId/reviews', requireAuth, validateReview, async (req, res) =>
 //Get all Bookings for a Spot based on the Spot's id
 router.get('/:spotId/bookings', requireAuth, async (req, res) => {
     const spot = await Spot.findByPk(req.params.spotId)
-
+    const bookingObj = {}
+    let bookingArr = []
+    let result = []
     if (!spot) {
         return res.status(404).json({ message: "Spot couldn't be found" });
     }
@@ -362,11 +326,27 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
             where: { spotId: req.params.spotId },
             include: { model: User, attributes: ['id', 'firstName', 'lastName'] }
         })
-        res.json({ Bookings: bookings })
+        bookings.forEach(booking => {
+            bookingArr.push(booking.toJSON())
+        })
+        bookingArr.forEach((ele) => {
+            let bookingList = {};
+            bookingList.User = ele.User;
+            bookingList.id = ele.id;
+            bookingList.spotId = ele.spotId;
+            bookingList.userId = ele.userId;
+            bookingList.startDate = ele.startDate;
+            bookingList.endDate = ele.endDate;
+            bookingList.createdAt = ele.createdAt;
+            bookingList.updatedAt = ele.updatedAt;
+            result.push(bookingList);
+        });
+
+        res.json({ Bookings: result })
     } else {
         const bookings = await Booking.findAll({
             where: { spotId: req.params.spotId },
-            attributes: ['spotId', 'startDate', 'endDate']
+            attributes: ['spotId', 'startDate', 'endDate'] // Only these attributes will be returned
         })
 
         res.json({ Bookings: bookings })
