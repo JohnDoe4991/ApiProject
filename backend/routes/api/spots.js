@@ -95,12 +95,26 @@ const validateReview = [
 ];
 
 const validateBooking = [
-    check("startDate")
-        .exists({ checkFalsy: true }),
-    // .withMessage("Review text is required"),
-    check("endDate")
-        .isAfter(new Date().toISOString())
-        .withMessage("endDate cannot come before startDate"),
+    check('startDate')
+        .exists({ checkFalsy: true })
+        .withMessage('startDate is required'),
+
+    check('endDate')
+        .exists({ checkFalsy: true })
+        .withMessage('endDate is required')
+        .custom((endDate, { req }) => {
+
+            const { startDate } = req.body;
+
+
+            if (endDate <= startDate) {
+                throw new Error('endDate cannot be on or before startDate');
+            }
+
+
+            return true;
+        }),
+
     handleValidationErrors,
 ];
 
@@ -114,7 +128,7 @@ const authCatch = (err, req, res, next) => {
 
 const handleDaError = (statusCode, message, data = {}, res) => {
     return res.status(statusCode).json({ message, ...data });
-  };
+};
 
 const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
@@ -125,6 +139,16 @@ const authMeAuthMe = (err, req, res, next) => {
 };
 
 const showErrors = (err, req, res, next) => {
+
+    res.status(400)
+    res.setHeader('Content-Type', 'application/json')
+    res.json({
+        message: "Bad Request",
+        errors: err.errors
+    })
+}
+
+const showValErr = (err, req, res, next) => {
 
     res.status(400)
     res.setHeader('Content-Type', 'application/json')
@@ -281,13 +305,13 @@ router.put("/:spotId", requireAuth, validateSpot, showErrors, async (req, res) =
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const spot = await Spot.findOne({ where: { id: spotId } });
 
-    if(spot && spot.ownerId === req.user.id) {
-      const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
-      res.json(updatedSpot);
+    if (spot && spot.ownerId === req.user.id) {
+        const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
+        res.json(updatedSpot);
     } else if (!spot) {
-      return handleDaError(404, "Spot couldn't be found", {}, res);
+        return handleDaError(404, "Spot couldn't be found", {}, res);
     } else if (spot && spot.ownerId !== req.user.id) {
-      next(err)
+        next(err)
     }
 }, authMeAuthMe);
 
@@ -420,34 +444,28 @@ router.get('/:spotId/bookings', requireAuth, fixErrorProb, async (req, res) => {
 
 
 // Create a Booking from a Spot based on the Spot's id
-router.post('/:spotId/bookings', requireAuth, fixErrorProb, async (req, res) => {
+router.post('/:spotId/bookings', requireAuth, fixErrorProb, validateBooking, showValErr, async (req, res) => {
     const { startDate, endDate } = req.body;
     const spotId = req.params.spotId;
     const userId = req.user.id;
 
 
 
-    const oldBooking = await Booking.findOne({
+    const startBooking = await Booking.findOne({
         where: {
             spotId: spotId,
-            [Op.or]: [
-                {
-                    startDate: {
-                        [Op.between]: [startDate, endDate],
-                    },
-                },
-                {
-                    endDate: {
-                        [Op.between]: [startDate, endDate],
-                    },
-                },
-                {
-                    [Op.and]: [
-                        { startDate: { [Op.lte]: startDate } },
-                        { endDate: { [Op.gte]: endDate } },
-                    ],
-                },
-            ],
+            startDate: {
+                [Op.between]: [startDate, endDate]
+            }
+        },
+    });
+
+    const endBooking = await Booking.findOne({
+        where: {
+            spotId: spotId,
+            endDate: {
+                [Op.between]: [startDate, endDate]
+            }
         },
     });
 
@@ -456,21 +474,21 @@ router.post('/:spotId/bookings', requireAuth, fixErrorProb, async (req, res) => 
 
     if (!spot) return res.status(404).json({ message: "Spot couldn't be found" })
 
-    if (spot && spot.ownerId === req.user.id) return next(err)
-    if (spot && spot.ownerId !== req.user.id) {
-        if (oldBooking) {
-            return res.status(403).json({
-                message: "Sorry, this spot is already booked for the specified dates",
-                errors: {
-                    startDate: "Start date conflicts with an existing booking",
-                    endDate: "End date conflicts with an existing booking"
-                }
-            });
-        } else {
-            const newBooking = await Booking.create({ spotId, userId, startDate, endDate });
-            return res.json(newBooking);
-        }
 
+    if (spot && spot.ownerId === req.user.id) return next(err)
+    if (!startBooking && !endBooking) {
+        const newBooking = await Booking.create({ spotId, userId, startDate, endDate });
+        return res.json(newBooking);
+    }
+    else if (startBooking && endBooking) {
+        res.status(403)
+        res.json({
+            message: "Sorry, this spot is already booked for the specified dates",
+            errors: {
+                startDate: "Start date conflicts with an existing booking",
+                endDate: "End date conflicts with an existing booking",
+            }
+        })
     }
 
 }, authMeAuthMe);
