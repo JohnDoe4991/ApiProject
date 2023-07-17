@@ -289,7 +289,7 @@ router.post('/:spotId/images', requireAuth, fixErrorProb, async (req, res) => {
         const { updatedAt, createdAt, ...response } = spotImage.toJSON();
         delete response.spotId;
 
-        return json(response);
+        return res.json(response);
     } else if (!spot) {
         return res.status(404).json({ message: "Spot couldn't be found" });
     } else if (spot && spot.ownerId !== req.user.id) {
