@@ -272,7 +272,8 @@ router.get('/:spotId', async (req, res) => {
 router.post('/', requireAuth, fixErrorProb, validateSpot, async (req, res) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const record = await Spot.create({ ownerId: req.user.id, address, city, state, country, lat, lng, name, description, price });
-    res.status(201).json(record);
+    res.status(201)
+    res.json(record);
 })
 
 // add an image to a spot based on spotid
