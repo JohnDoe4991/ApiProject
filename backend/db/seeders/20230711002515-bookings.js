@@ -82,8 +82,8 @@ module.exports = {
       {
         spotId: 2,
         userId: 1,
-        startDate: '1985-07-14',
-        endDate: '1986-08-16',
+        startDate: '2023-07-14',
+        endDate: '2026-08-16',
       },
       {
         spotId: 1,
