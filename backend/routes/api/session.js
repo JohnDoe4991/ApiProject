@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
-const { setTokenCookie, restoreUser } = require('../../utils/auth');
+const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
 const { User } = require('../../db/models');
 const router = express.Router();
 
@@ -19,6 +19,15 @@ const validateLogin = [
         .withMessage('Please provide a password.'),
     handleValidationErrors
 ];
+
+const authCatch = (err, req, res, next) => {
+    res.status(401)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            message: "Authentication required"
+        })
+};
+
 // Log in
 router.post(
     '/',
@@ -69,7 +78,7 @@ router.delete(
 );
 
 router.get(
-    '/',
+    '/', authCatch,
     (req, res) => {
         const { user } = req;
         if (user) {

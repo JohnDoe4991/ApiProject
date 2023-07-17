@@ -104,12 +104,34 @@ const validateBooking = [
     handleValidationErrors,
 ];
 
+const authCatch = (err, req, res, next) => {
+    res.status(401)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            message: "Authentication required"
+        })
+};
+
+const handleDaError = (statusCode, message, data = {}, res) => {
+    return res.status(statusCode).json({ message, ...data });
+  };
+
 const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
         .setHeader('Content-Type', 'application/json')
         .json({
             message: 'Forbidden'
         })
+};
+
+const showErrors = (err, req, res, next) => {
+
+    res.status(400)
+    res.setHeader('Content-Type', 'application/json')
+    res.json({
+        message: "Bad Request",
+        errors: err.errors
+    })
 }
 
 const queryParm = (err, req, res, next) => {
@@ -217,7 +239,7 @@ router.post('/', requireAuth, validateSpot, async (req, res) => {
 })
 
 // add an image to a spot based on spotid
-router.post('/:spotId/images', requireAuth, async (req, res) => {
+router.post('/:spotId/images', requireAuth, authCatch, async (req, res) => {
     const { url, preview } = req.body;
     const spotId = req.params.spotId;
 
@@ -236,25 +258,28 @@ router.post('/:spotId/images', requireAuth, async (req, res) => {
         next(err)
     }
 
-}, authMeAuthMe);
+}, authMeAuthMe,);
 
 // Edit a spot
-router.put('/:spotId', requireAuth, validateSpot, async (req, res) => {
-    const { address, city, state, country, lat, lng, name, description, price } = req.body;
-    // const { spotId } = req.params;
+router.put("/:spotId", requireAuth, validateSpot, showErrors, async (req, res) => {
+
     const spotId = req.params.spotId;
+
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const spot = await Spot.findOne({ where: { id: spotId } });
-    if (!spot) {
-        return res.status(404).json({ message: "Spot couldn't be found" });
+
+    if(spot && spot.ownerId === req.user.id) {
+      const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
+      res.json(updatedSpot);
+    } else if (!spot) {
+      return handleDaError(404, "Spot couldn't be found", {}, res);
     } else if (spot && spot.ownerId !== req.user.id) {
-        next(err)
+      next(err)
     }
-    const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
-    res.json(updatedSpot);
-}, authMeAuthMe);
+  }, authMeAuthMe);
 
 //Delete a spot
-router.delete('/:spotId', requireAuth, async (req, res) => {
+router.delete('/:spotId', requireAuth, showErrors, async (req, res) => {
     const spotId = req.params.spotId;
     const { user } = req;
     const findOwner = await Spot.findByPk(spotId)
