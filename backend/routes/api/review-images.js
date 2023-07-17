@@ -19,7 +19,17 @@ const authorizationCatch = (err, req, res, next) => {
         })
 };
 
-router.delete('/:imageId', requireAuth, async (req, res) => {
+const fixErrorProb = function (err, req, res, next) {
+    res.status(401);
+    res.setHeader('Content-Type','application/json')
+    res.json(
+        {
+            message: "Authentication required"
+          }
+    );
+  };
+
+router.delete('/:imageId', requireAuth, fixErrorProb, async (req, res) => {
     const imageId = req.params.imageId;
     const { user } = req;
 

@@ -27,9 +27,19 @@ const catchErrors = (statusCode, message, data = {}, res) => {
     return res.status(statusCode).json({ message, ...data });
 };
 
+const fixErrorProb = function (err, req, res, next) {
+    res.status(401);
+    res.setHeader('Content-Type', 'application/json')
+    res.json(
+        {
+            message: "Authentication required"
+        }
+    );
+};
+
 
 ///Get all bookings
-router.get("/current", requireAuth, async (req, res) => {
+router.get("/current", requireAuth, fixErrorProb, async (req, res) => {
     const allBookings = await Booking.findAll({
         where: { userId: req.user.id },
         include: [
@@ -69,7 +79,7 @@ router.get("/current", requireAuth, async (req, res) => {
 });
 
 //Edit a Booking
-router.put("/:bookingId", requireAuth, async (req, res, next) => {
+router.put("/:bookingId", requireAuth, fixErrorProb, async (req, res, next) => {
     const { startDate, endDate } = req.body;
 
     const bookingId = req.params.bookingId;
@@ -118,7 +128,7 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
 });
 
 //Delete a Booking
-router.delete('/:bookingId', requireAuth, async (req, res, next) => {
+router.delete('/:bookingId', requireAuth, fixErrorProb, async (req, res, next) => {
     const bookingId = req.params.bookingId;
     const { user } = req;
     const bookingOwner = await Booking.findByPk(bookingId)
