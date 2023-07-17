@@ -17,11 +17,21 @@ const authMeAuthMe = (err, req, res, next) => {
         .json({
             message: 'Forbidden'
         })
-}
+};
+
+const fixErrorProb = function (err, req, res, next) {
+  res.status(401);
+  res.setHeader('Content-Type','application/json')
+  res.json(
+      {
+          message: "Authentication required"
+        }
+  );
+};
 
 
 // Delete Spot Image
-router.delete('/:imageId', requireAuth, async (req, res) => {
+router.delete('/:imageId', requireAuth, fixErrorProb, async (req, res) => {
     const imageId = req.params.imageId;
     const { user } = req;
 

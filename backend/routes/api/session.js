@@ -20,14 +20,6 @@ const validateLogin = [
     handleValidationErrors
 ];
 
-const authCatch = (err, req, res, next) => {
-    res.status(401)
-        .setHeader('Content-Type', 'application/json')
-        .json({
-            message: "Authentication required"
-        })
-};
-
 // Log in
 router.post(
     '/',
@@ -78,7 +70,7 @@ router.delete(
 );
 
 router.get(
-    '/', authCatch,
+    '/',
     (req, res) => {
         const { user } = req;
         if (user) {

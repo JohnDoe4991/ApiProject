@@ -20,6 +20,16 @@ const validateReview = [
     handleValidationErrors
 ];
 
+const fixErrorProb = function (err, req, res, next) {
+    res.status(401);
+    res.setHeader('Content-Type', 'application/json')
+    res.json(
+        {
+            message: "Authentication required"
+        }
+    );
+};
+
 const authMeAuthMe = (err, req, res, next) => {
     res.status(403)
         .setHeader('Content-Type', 'application/json')
@@ -29,7 +39,7 @@ const authMeAuthMe = (err, req, res, next) => {
 }
 
 //Get all reviews by current user
-router.get('/current', requireAuth, async (req, res) => {
+router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
     const reviewList = await Review.findAll({
         include: [
             {
@@ -75,7 +85,7 @@ router.get('/current', requireAuth, async (req, res) => {
 
 
 // Add image to Review based on reviews id
-router.post('/:reviewId/images', requireAuth, async (req, res) => {
+router.post('/:reviewId/images', requireAuth, fixErrorProb, async (req, res) => {
     const image = req.body.url;
     console.log("image: ", image);
     const review = await Review.findByPk(req.params.reviewId, {
@@ -117,7 +127,7 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 
 
 //Edit a review
-router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
+router.put('/:reviewId', requireAuth, fixErrorProb, validateReview, async (req, res) => {
     const { review, stars } = req.body;
 
     const reviewId = req.params.reviewId;
@@ -132,7 +142,7 @@ router.put('/:reviewId', requireAuth, validateReview, async (req, res) => {
 }, authMeAuthMe);
 
 // Delete a review
-router.delete('/:reviewId', requireAuth, async (req, res) => {
+router.delete('/:reviewId', requireAuth, fixErrorProb, async (req, res) => {
     const reviewId = req.params.reviewId;
     const { user } = req;
     const reviewOwner = await Review.findByPk(reviewId)
