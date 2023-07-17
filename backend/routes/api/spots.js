@@ -144,9 +144,6 @@ const fixErrorProb = function (err, req, res, next) {
     );
 };
 
-const handleTheErrors = (statusCode, message, data = {}, res) => {
-    return res.status(statusCode).json({ message, ...data });
-};
 
 const queryParm = (err, req, res, next) => {
     const errors = validationResult(req);

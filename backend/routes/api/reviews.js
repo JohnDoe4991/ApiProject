@@ -38,6 +38,16 @@ const authMeAuthMe = (err, req, res, next) => {
         })
 }
 
+const showValErr = (err, req, res, next) => {
+
+    res.status(400)
+    res.setHeader('Content-Type', 'application/json')
+    res.json({
+        message: "Bad Request",
+        errors: err.errors
+    })
+}
+
 //Get all reviews by current user
 router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
     const reviewList = await Review.findAll({
@@ -122,12 +132,12 @@ router.post('/:reviewId/images', requireAuth, fixErrorProb, async (req, res) => 
         url: image,
     });
 
-    res.json(reviewImage);
+    res.json({ id: reviewImage.id, url: reviewImage.url });
 });
 
 
 //Edit a review
-router.put('/:reviewId', requireAuth, fixErrorProb, validateReview, async (req, res) => {
+router.put('/:reviewId', requireAuth, fixErrorProb, validateReview, showValErr, async (req, res) => {
     const { review, stars } = req.body;
 
     const reviewId = req.params.reviewId;
