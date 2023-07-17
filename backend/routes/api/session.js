@@ -20,15 +20,6 @@ const validateLogin = [
     handleValidationErrors
 ];
 
-const fixErrorProb = function (err, req, res, next) {
-    res.status(401);
-    res.setHeader('Content-Type','application/json')
-    res.json(
-        {
-            message: "Authentication required"
-          }
-    );
-  };
 // Log in
 router.post(
     '/',

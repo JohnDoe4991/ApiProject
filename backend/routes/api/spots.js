@@ -114,13 +114,17 @@ const authMeAuthMe = (err, req, res, next) => {
 
 const fixErrorProb = function (err, req, res, next) {
     res.status(401);
-    res.setHeader('Content-Type','application/json')
+    res.setHeader('Content-Type', 'application/json')
     res.json(
         {
             message: "Authentication required"
-          }
+        }
     );
-  };
+};
+
+const handleTheErrors = (statusCode, message, data = {}, res) => {
+    return res.status(statusCode).json({ message, ...data });
+};
 
 const queryParm = (err, req, res, next) => {
     const errors = validationResult(req);
@@ -135,6 +139,16 @@ const queryParm = (err, req, res, next) => {
 
     next();
 };
+
+const showErrors = (err, req, res, next) => {
+
+    res.status(400)
+    res.setHeader('Content-Type', 'application/json')
+    res.json({
+        message: "Bad Request",
+        errors: err.errors
+    })
+}
 
 
 
@@ -249,18 +263,21 @@ router.post('/:spotId/images', requireAuth, fixErrorProb, async (req, res) => {
 }, authMeAuthMe);
 
 // Edit a spot
-router.put('/:spotId', requireAuth, fixErrorProb, validateSpot, async (req, res) => {
-    const { address, city, state, country, lat, lng, name, description, price } = req.body;
-    // const { spotId } = req.params;
+router.put("/:spotId", requireAuth, validateSpot, showErrors, async (req, res) => {
+
     const spotId = req.params.spotId;
+
+    const { address, city, state, country, lat, lng, name, description, price } = req.body;
     const spot = await Spot.findOne({ where: { id: spotId } });
-    if (!spot) {
-        return res.status(404).json({ message: "Spot couldn't be found" });
+
+    if (spot && spot.ownerId === req.user.id) {
+        const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
+        res.json(updatedSpot);
+    } else if (!spot) {
+        return handleTheErrors(404, "Spot couldn't be found", {}, res);
     } else if (spot && spot.ownerId !== req.user.id) {
         next(err)
     }
-    const updatedSpot = await spot.update({ address, city, state, country, lat, lng, name, description, price });
-    res.json(updatedSpot);
 }, authMeAuthMe);
 
 //Delete a spot
