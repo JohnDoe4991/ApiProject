@@ -62,7 +62,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add seed commands here.
      *
@@ -76,29 +76,21 @@ module.exports = {
       {
         spotId: 1,
         userId: 1,
-        startDate: '2023-08-12',
-        endDate: '2023-08-16',
-
-
+        startDate: '2025-08-12',
+        endDate: '2025-08-16',
       },
       {
         spotId: 2,
         userId: 1,
-        startDate: '2023-07-14',
-        endDate: '2023-08-16',
-
-
-      },
-      {
-        spotId: 3,
-        userId: 1,
         startDate: '1985-07-14',
         endDate: '1986-08-16',
-
-
       },
-
-
+      {
+        spotId: 1,
+        userId: 2,
+        startDate: '2026-07-14',
+        endDate: '2026-08-16',
+      },
       {
         spotId: 2,
         userId: 2,
@@ -118,7 +110,7 @@ module.exports = {
   },
 
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *
@@ -128,7 +120,7 @@ module.exports = {
     options.tableName = 'Bookings';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      userId: {[Op.in]:[1,2,3]}
+      userId: { [Op.in]: [1, 2, 3] }
     }, {});
   }
 };
