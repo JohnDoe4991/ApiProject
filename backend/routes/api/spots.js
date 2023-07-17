@@ -298,7 +298,7 @@ router.post('/:spotId/images', requireAuth, fixErrorProb, async (req, res) => {
 }, authMeAuthMe,);
 
 // Edit a spot
-router.put("/:spotId", requireAuth, validateSpot, showErrors, async (req, res) => {
+router.put("/:spotId", requireAuth, fixErrorProb, validateSpot, showErrors, async (req, res) => {
 
     const spotId = req.params.spotId;
 
