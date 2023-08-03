@@ -190,7 +190,7 @@ const queryParm = (err, req, res, next) => {
 //by current User
 router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
     const userId = req.user.id;
-    const spots = await Spot.findAll({
+    const allSpots = await Spot.findAll({
         where: { ownerId: userId },
         include: [
             { model: Review, attributes: ["stars"] },
@@ -198,8 +198,9 @@ router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
         ]
     });
 
-    let spotsList = processSpots(spots)
-    res.json(spotsList);
+    let Spots = processSpots(allSpots)
+    const responseObj = { Spots };
+    res.json(responseObj);
 });
 
 //get spot from an id
