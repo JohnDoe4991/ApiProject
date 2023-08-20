@@ -50,22 +50,6 @@
   align-items: center;
 }
 
-.profile-button {
-  margin-left: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #008489;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.profile-button:hover {
-  background-color: #f5f5f5;
-}
 
 /* Styles for the dropdown in the navigation */
 .navBar-far-right {
@@ -76,6 +60,35 @@
 /* ProfileButton.css */
 .profile-dropdown-container {
   position: relative;
+}
+
+.prof-button:hover {
+  cursor: pointer;
+}
+
+.prof-btn {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 21px;
+  border: 1px solid grey;
+}
+
+.menu-i {
+  stroke: currentColor;
+  fill: none;
+  width: 20px;
+  height: 22px;
+  margin-right: 5px;
+}
+
+.prof-icon {
+  fill: currentColor;
+  width: 30px;
+  height: 30px;
+  color: #0a0a0a;
 }
 
 .profile-dropdown {

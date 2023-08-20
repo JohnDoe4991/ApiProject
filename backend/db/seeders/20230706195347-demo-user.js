@@ -12,8 +12,8 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await User.bulkCreate([
       {
-        firstName: "Marlo",
-        lastName: "Stanfield",
+        firstName: "John",
+        lastName: "Doe",
         email: 'demo@user.io',
         username: 'Demo-lition',
         hashedPassword: bcrypt.hashSync('password')
@@ -23,15 +23,57 @@ module.exports = {
         lastName: "Kennedy",
         email: 'user1@user.io',
         username: 'FakeUser1',
-        hashedPassword: bcrypt.hashSync('password2')
+        hashedPassword: bcrypt.hashSync('password1')
       },
       {
         firstName: "George",
         lastName: "Washington",
         email: 'user2@user.io',
         username: 'FakeUser2',
+        hashedPassword: bcrypt.hashSync('password2')
+      },
+      {
+        firstName: "John",
+        lastName: "Tejada",
+        email: 'user3@user.io',
+        username: 'FakeUser3',
         hashedPassword: bcrypt.hashSync('password3')
-      }
+      },
+      {
+        firstName: "Brad",
+        lastName: "Pitt",
+        email: 'user4@user.io',
+        username: 'FakeUser4',
+        hashedPassword: bcrypt.hashSync('password4')
+      },
+      {
+        firstName: "Sam",
+        lastName: "Jackson",
+        email: 'user5@user.io',
+        username: 'FakeUser5',
+        hashedPassword: bcrypt.hashSync('password5')
+      },
+      {
+        firstName: "Steve",
+        lastName: "McQueen",
+        email: 'user6@user.io',
+        username: 'FakeUser6',
+        hashedPassword: bcrypt.hashSync('password6')
+      },
+      {
+        firstName: "Optimus",
+        lastName: "Prime",
+        email: 'user7@user.io',
+        username: 'FakeUser7',
+        hashedPassword: bcrypt.hashSync('password7')
+      },
+      {
+        firstName: "Ibo",
+        lastName: "Tejada",
+        email: 'user8@user.io',
+        username: 'FakeUser8',
+        hashedPassword: bcrypt.hashSync('password8')
+      },
     ], { validate: true });
   },
 
@@ -43,5 +85,3 @@ module.exports = {
     }, {});
   }
 };
-
-
