@@ -1,3 +1,82 @@
+.detail-container {
+    max-width: 1000px;
+}
+
+.name-city {
+
+}
+
+.name-city h1 {
+    font-weight: 250;
+}
+
+.name-city h2 {
+    font-weight: normal;
+}
+
+.photos {
+    display:flex;
+
+}
+
+.preview {
+    /* Add your styles for the preview photo here */
+}
+
+.preview img {
+    flex-wrap: wrap;
+
+}
+
+.other-photos {
+    margin: 10px;}
+
+
+    .other-photos img:nth-child(3),
+    .other-photos img:nth-child(4) {
+
+    }
+
+.footer {
+    /* Add your styles for the footer section here */
+}
+
+.hosted-by {
+    /* Add your styles for the "hosted by" section here */
+}
+
+.hosted-by h3 {
+    font-weight: 250;
+}
+
+.footer p {
+    max-width: 70%;
+}
+
 .pay-me-container {
-    border-style: solid;
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border:1px solid black
+
+}
+
+.pay-me-container h3 {
+    /* Add your styles for the price per night here */
+}
+
+.rating-reviews {
+    display:flex;
+}
+
+.rating {
+    /* Add your styles for the star rating here */
+}
+
+.new {
+    /* Add your styles for the "New" label here */
+}
+
+.reserve-button {
+    /* Add your styles for the reserve button here */
 }
