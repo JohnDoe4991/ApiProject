@@ -205,70 +205,49 @@ router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
 
 //get spot from an id
 router.get('/:spotId', async (req, res) => {
-    let realId = req.params.spotId
-    let goal = await Spot.findByPk(realId, {
+    const spotId = req.params.spotId;
+
+    const spot = await Spot.findByPk(spotId, {
         include: [
             { model: Review },
-            {
-                model: SpotImage,
-                attributes: ['id', 'url', 'preview']
-            },
-            {
-                model: User,
-                where: { id: realId },
-                attributes: ['id', 'firstName', 'lastName']
-            }
+            { model: SpotImage, attributes: ['id', 'url', 'preview'] },
+            { model: User, attributes: ['id', 'firstName', 'lastName'] }
         ]
-    })
-    if (goal) {
-        let goal2 = [goal]
-        let newArray = []
+    });
 
-        goal2.forEach((ele) => {
-
-            newArray.push(ele.toJSON())
-        })
-        newArray.forEach((ele) => {
-
-            let starsAmount = 0
-            let starsCount = 0
-            ele.Reviews.forEach((review) => {
-
-                if (review.stars) {
-                    starsAmount += review.stars
-                    starsCount += 1
-                }
-            })
-            if (starsAmount !== 0) {
-                ele.numReviews = starsCount
-                ele.avgStarRating = (starsAmount / starsCount)
-            }
-            else {
-                ele.numReviews = starsCount
-                ele.avgStarRating = 'This spot has no ratings'
-            }
-            delete ele.Reviews;
-            let temporary2 = ele.User
-            delete ele.User
-            let temporary = ele.SpotImages
-            delete ele.SpotImages;
-            ele.SpotImages = temporary
-            ele.Owner = temporary2
-
-        })
-        let [stripped] = newArray
-        res.status(200)
-        res.setHeader('Content-Type', 'application/json')
-        res.json(stripped)
+    if (!spot) {
+        return handleDaError(404, "Spot couldn't be found", {}, res);
     }
-    else {
-        res.status(404)
-        res.setHeader('Content-Type', 'application/json')
-        res.json({
-            message: "Spot couldn't be found"
-        })
-    }
-})
+
+    const numReviews = spot.Reviews.length;
+    const totalStars = spot.Reviews.reduce((sum, review) => sum + review.stars, 0);
+    const avgStarRating = numReviews > 0 ? totalStars / numReviews : 0;
+
+    const response = {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        numReviews,
+        avgStarRating,
+        SpotImages: spot.SpotImages,
+        User: spot.User
+    };
+
+    return res.json(response);
+});
+
+
+
 // create a spot
 router.post('/', requireAuth, fixErrorProb, validateSpot, async (req, res) => {
     const { address, city, state, country, lat, lng, name, description, price } = req.body;

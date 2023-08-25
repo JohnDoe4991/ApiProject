@@ -2,20 +2,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
 import { Link } from "react-router-dom";
-import './GetAllSpots.css'
+import './Spots.css/GetAllSpots.css'
 
 
 export default function GetAllSpots() {
 
-    const allSpotz = useSelector((state) => state.spots.allSpots);
-    const allSpotzArr = Object.values(allSpotz);
+    const allSpotzArr = Object.values(useSelector((state) => state.spots.allSpots));
+
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(getAllSpotsThunk())
     }, [dispatch])
-
-    console.log("spotzzz", allSpotzArr)
 
 
     return (
@@ -23,6 +21,7 @@ export default function GetAllSpots() {
             <div className="spots-main-container">
                 {allSpotzArr && allSpotzArr.map((spot) => (
                     <Link
+                        key={spot.id}
                         to={`/spots/${spot.id}`}
                         style={{ textDecoration: "none", color: "var(--black)" }}
                     >

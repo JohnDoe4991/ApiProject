@@ -1,20 +1,24 @@
 import { csrfFetch } from "./csrf";
 
-// ************************************************
+
+
 //                   ****types****
-// ************************************************
+
 const GET_ALL_SPOTS = "/get_all_spots"; //read. // GET spots/
 const GET_ALL_SPOTS_OF_CURRENT_USER = "/get_all_spots_of_user"; //read. // GET spots/
+const GET_SPOT_DETAILS = "/spot_details"
 
-// ************************************************
+
+
 //                   ****action creator****
-// ************************************************
-export const getSpots = (spots) => ({type: GET_ALL_SPOTS, spots});
-export const getAllOwnerSpots = (spots) => ({ type: GET_ALL_SPOTS_OF_CURRENT_USER, spots });
 
-// ************************************************
+const actionGetSpots = (spots) => ({ type: GET_ALL_SPOTS, spots });
+const actionGetAllOwnerSpots = (spots) => ({ type: GET_ALL_SPOTS_OF_CURRENT_USER, spots });
+const actionGetSpotDetails = (spot) => ({ type: GET_SPOT_DETAILS, spot })
+
+
 //                   ****Thunks****
-// ************************************************
+
 
 // ***************************getAllSpotsThunk**************************
 // these functions hit routes
@@ -25,7 +29,7 @@ export const getAllSpotsThunk = () => async (dispatch) => {
   if (res.ok) {
     const { Spots } = await res.json(); // { Spots: [] }
     // do the thing with this data
-    dispatch(getSpots(normalizeArr(Spots)));
+    dispatch(actionGetSpots(normalizeArr(Spots)));
     // dispatch(getAllSpots(Spots))
     return Spots;
   } else {
@@ -33,16 +37,16 @@ export const getAllSpotsThunk = () => async (dispatch) => {
     return errors;
   }
 };
-// ***************************getOwnerAllSpotsThunk**************************
+// getOwnerAllSpotsThunk
 // these functions hit routes
 export const getOwnerAllSpotsThunk = () => async (dispatch) => {
   const res = await csrfFetch("/api/spots/current");
 
   if (res.ok) {
-    const Spots  = await res.json(); // { Spots: [] }
+    const Spots = await res.json(); // { Spots: [] }
     // do the thing with this data
     // console.log("Spots from getOwnerAllSpotsThunk:", Spots)
-    dispatch(getAllOwnerSpots(Spots));
+    dispatch(actionGetAllOwnerSpots(Spots));
     // dispatch(getAllSpots(Spots))
     return Spots;
   } else {
@@ -51,6 +55,37 @@ export const getOwnerAllSpotsThunk = () => async (dispatch) => {
     return errors;
   }
 };
+
+//getDetailsThunk
+// export const getDetailsThunk = (spotId) => async (dispatch) => {
+//   const res = await csrfFetch(`/api/spots/${spotId}`)
+
+//   if (res.ok) {
+//     const Spots = await res.json()
+//     dispatch(actionGetSpotDetails(Spots));
+//     return Spots;
+//   } else {
+//     const errors = await res.json();
+//     return errors;
+//   }
+// };
+
+export const getDetailsThunk = ( spotId ) => async (dispatch) => {
+  const res = await csrfFetch(`/api/spots/${spotId}`);
+
+  if (res.ok) {
+    const Spot = await res.json();
+
+
+    dispatch(actionGetSpotDetails(Spot));
+    return Spot;
+  } else {
+    const errors = await res.json();
+    return errors;
+  }
+};
+
+
 // ***************************normalizeArr**************************
 function normalizeArr(spots) {
   const normalizedSpots = {};
@@ -69,19 +104,18 @@ export default function spotReducer(state = initialState, action) {
     case GET_ALL_SPOTS:
       newState = { ...state, allSpots: {} };
       newState.allSpots = action.spots;
-      // normalize this array into state
-      // newState = structuredClone(state);
-      // action.spots.forEach((spot) => {
-      //     newState.allSpots[spot.id] = spot;
-      // });
+
       return newState;
     case GET_ALL_SPOTS_OF_CURRENT_USER:
       newState = { ...state, allSpots: {} };
-      // newState = { allSpots: {...state, allSpots: {}, singleSpot: {}} };
+
       newState.allSpots = action.spots;
 
       return newState;
-
+    case GET_SPOT_DETAILS:
+      newState = { ...state, singleSpot: {} };
+      newState.singleSpot = action.spot
+      return newState;
     default:
       return state;
   }
