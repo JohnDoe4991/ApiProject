@@ -2,7 +2,7 @@ import { csrfFetch } from "./csrf";
 
 
 
-//                   ****types****
+// types
 
 const GET_ALL_SPOTS = "/get_all_spots"; //read. // GET spots/
 const GET_ALL_SPOTS_OF_CURRENT_USER = "/get_all_spots_of_user"; //read. // GET spots/
@@ -10,17 +10,17 @@ const GET_SPOT_DETAILS = "/spot_details"
 
 
 
-//                   ****action creator****
+//action creator
 
 const actionGetSpots = (spots) => ({ type: GET_ALL_SPOTS, spots });
 const actionGetAllOwnerSpots = (spots) => ({ type: GET_ALL_SPOTS_OF_CURRENT_USER, spots });
 const actionGetSpotDetails = (spot) => ({ type: GET_SPOT_DETAILS, spot })
 
 
-//                   ****Thunks****
+//Thunks
 
 
-// ***************************getAllSpotsThunk**************************
+//getAllSpotsThunk
 // these functions hit routes
 export const getAllSpotsThunk = () => async (dispatch) => {
   const res = await csrfFetch("/api/spots");
@@ -44,10 +44,9 @@ export const getOwnerAllSpotsThunk = () => async (dispatch) => {
 
   if (res.ok) {
     const Spots = await res.json(); // { Spots: [] }
-    // do the thing with this data
-    // console.log("Spots from getOwnerAllSpotsThunk:", Spots)
+
     dispatch(actionGetAllOwnerSpots(Spots));
-    // dispatch(getAllSpots(Spots))
+
     return Spots;
   } else {
     const errors = await res.json();
@@ -56,21 +55,8 @@ export const getOwnerAllSpotsThunk = () => async (dispatch) => {
   }
 };
 
-//getDetailsThunk
-// export const getDetailsThunk = (spotId) => async (dispatch) => {
-//   const res = await csrfFetch(`/api/spots/${spotId}`)
 
-//   if (res.ok) {
-//     const Spots = await res.json()
-//     dispatch(actionGetSpotDetails(Spots));
-//     return Spots;
-//   } else {
-//     const errors = await res.json();
-//     return errors;
-//   }
-// };
-
-export const getDetailsThunk = ( spotId ) => async (dispatch) => {
+export const getDetailsThunk = (spotId) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}`);
 
   if (res.ok) {
@@ -86,16 +72,17 @@ export const getDetailsThunk = ( spotId ) => async (dispatch) => {
 };
 
 
-// ***************************normalizeArr**************************
+// normalizeArr
+
 function normalizeArr(spots) {
-  const normalizedSpots = {};
-  spots.forEach((spot) => (normalizedSpots[spot.id] = spot));
-  return normalizedSpots;
+  const normalizedStuff = {};
+  spots.forEach((spot) => (normalizedStuff[spot.id] = spot));
+  return normalizedStuff;
 }
 
-// ************************************************
-//                   ****Reducer****
-// ************************************************
+
+//Reducer
+
 const initialState = { allSpots: {}, singleSpot: {} };
 
 export default function spotReducer(state = initialState, action) {

@@ -7,7 +7,7 @@ import './Spots.css/GetAllSpots.css'
 
 export default function GetAllSpots() {
 
-    const allSpotzArr = Object.values(useSelector((state) => state.spots.allSpots));
+    const allSpotzArr = Object.values(useSelector((state) => (state.spots.allSpots ? state.spots.allSpots : [])));
 
     const dispatch = useDispatch()
 
@@ -39,8 +39,8 @@ export default function GetAllSpots() {
                                         <span className="price">${spot.price}</span> <span className="night-text">night</span>
                                     </p>
                                 </div>
-                                {spot.avgRating > 0 && <p className="rating">⭐️{spot.avgRating.toFixed(1)}</p>}
-                                {!spot.avgRating && <p className="new">⭐️New</p>}
+                                {spot.avgRating > 0 && <p className="rating1">★{spot.avgRating.toFixed(1)}</p>}
+                                {!spot.avgRating && <p className="new1">★New</p>}
                             </div>
                         </div>
                     </Link>

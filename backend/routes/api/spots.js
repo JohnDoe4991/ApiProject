@@ -212,6 +212,9 @@ router.get('/:spotId', async (req, res) => {
             { model: Review },
             { model: SpotImage, attributes: ['id', 'url', 'preview'] },
             { model: User, attributes: ['id', 'firstName', 'lastName'] }
+        ],
+        order: [
+            [SpotImage, 'preview', 'DESC']  // This orders preview true images first
         ]
     });
 
@@ -334,9 +337,7 @@ router.get('/:spotId/reviews', async (req, res) => {
     const reviews = await Review.findAll(options);
 
     // Check if any reviews are found
-    if (reviews.length === 0) {
-        return res.status(404).json({ message: 'Spot not found' });
-    }
+    if (reviews.length === 0) return res.json({ Reviews: [] });
 
     for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i].toJSON();
