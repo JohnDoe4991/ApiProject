@@ -2,18 +2,22 @@ import React, { useEffect, useState, } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailsThunk } from "../../store/spots";
+import { getAllReviewsThunk } from "../../store/reviews";
 import "./Spots.css/SpotDetails.css"
 
 
 export default function SpotDetails() {
     const { spotId } = useParams();
+
     const dispatch = useDispatch()
     const thisSpot = useSelector((state) => state.spots.singleSpot ? state.spots.singleSpot : null);
+    const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
     console.log("This Spot    ", thisSpot)
+    console.log("This Review    ", thisReview)
 
     useEffect(() => {
         dispatch(getDetailsThunk(spotId));
-
+        dispatch(getAllReviewsThunk(spotId))
     }, [dispatch, spotId]);
 
     if (!thisSpot) {
@@ -25,6 +29,17 @@ export default function SpotDetails() {
         return null;
     }
 
+    const fixDate = (dateString) => {
+        const date = new Date(dateString);
+        const formatter = new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+        return formatter.format(date);
+    };
+
+
     return (
         <>
             <div className="detail-container">
@@ -34,31 +49,52 @@ export default function SpotDetails() {
                 </div>
                 <div className="photos">
                     <div className="preview">
-                        <img src={thisSpot.SpotImages[0].url} alt="Preview" />
+                        <img className="annoying-photos" src={thisSpot.SpotImages[0]?.url} alt={thisSpot.name} />
                     </div>
-                        {thisSpot.SpotImages.slice(1, 5).map((image, index) => (
+                    <div className="four-guys">
+                        {thisSpot.SpotImages?.slice(1, 5).map((image, index) => (
                             <div className="other-photos" key={index}>
-                                <img src={image.url} alt={`Image ${index}`} />
+                                <img className="annoying-photos" src={image.url} alt={`Image ${index + 1}`} />
                             </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
                 <div className="footer">
                     <div className="hosted-by">
                         <h3>Hosted by {thisSpot.User.firstName}{" "}{thisSpot.User.lastName}</h3>
+                        <p>{thisSpot.description}</p>
                     </div>
-                    <p>{thisSpot.description}</p>
                     <div className="pay-me-container">
-                        <h3>${thisSpot.price}{" "}Night</h3>
                         <div className="rating-reviews">
-                            {thisSpot.avgStarRating > 0 && <p className="rating">⭐️{thisSpot.avgStarRating.toFixed(1)}</p>}
-                            {!thisSpot.avgStarRating && <p className="new">⭐️New</p>}
-                            {" "}
-                            {thisSpot.numReviews} Reviews
+                            <p className="price-p-tag">
+                                <span className="spot-price">${thisSpot.price} {" "} </span>night
+                            </p>
+                            {thisSpot.avgStarRating > 0 && <p className="rating">★{thisSpot.avgStarRating.toFixed(1)}</p>}
+                            {!thisSpot.avgStarRating && <p className="new">★New</p>}
+                            {thisSpot.numReviews !== undefined && thisSpot.numReviews === 1 && (<h3>· {"    "} {thisSpot.numReviews} {"    "}Review</h3>)}
+                            {thisSpot && thisSpot.numReviews > 1 && <h3>· {"    "} {thisSpot.numReviews} {"    "}Reviews</h3>}
                         </div>
-                        <button className="reserve-button">Reserve</button>
+                        <button className="reserve-button" type="button" onClick={() => alert("Feature Coming Soon...")}>Reserve</button>
                     </div>
                 </div>
+                <hr></hr>
+                <h4><div className="rating-reviews-two">
+                    {thisSpot.avgStarRating > 0 && <p className="rating-two">★{thisSpot.avgStarRating.toFixed(1)}</p>}
+                    {!thisSpot.avgStarRating && <p className="new-two">★New</p>}
+                    {thisSpot.numReviews !== undefined && thisSpot.numReviews === 1 && (<h3>· {"    "} {thisSpot.numReviews} {"    "}Review</h3>)}
+                    {thisSpot && thisSpot.numReviews > 1 && <h3>· {"    "} {thisSpot.numReviews} {"    "}Reviews</h3>}
+                </div></h4>
+                <button className="Create-Review">Post Your Review</button>
+                {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
+                    <div className="bottom-reviews">
+                        <div className="bottom-reviews-bunch">
+                            <h3>{review.User.firstName}</h3>
+                            <p> {fixDate(review.createdAt)} </p>
+                        </div>
+                        <p> "{review.review}" </p>
+                    </div>
+                )))) : (<div className="be-the-first"> Be the first to post a review! </div>)}
             </div>
         </>
     );
-}
+};
