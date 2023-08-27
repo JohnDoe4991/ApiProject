@@ -2,81 +2,194 @@
     max-width: 1000px;
 }
 
-.name-city {
-
-}
-
 .name-city h1 {
     font-weight: 250;
+    font-size: 24pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .name-city h2 {
     font-weight: normal;
+    font-size: 12pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .photos {
-    display:flex;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
 
-}
+  .preview img {
+    display:inline-block;
+    height: 347px;
+border-radius: 5px;
+    position: relative;
+    width: 98%;
+  }
 
-.preview {
-    /* Add your styles for the preview photo here */
-}
-
-.preview img {
+  .four-guys{
+    display:inline-block;
+    width:49.6%;
+    border-radius: 10px;
     flex-wrap: wrap;
+    height: 100%;
 
-}
+  }
+  .annoying-photos{
+    gap:10px;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit: cover ;
+    padding: 2px;
+    border-radius: 3px;
+  }
+  .other-photos{
+    width:50%;
+    padding-top:36%;
+    display:inline-block;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+  }
 
-.other-photos {
-    margin: 10px;}
-
-
-    .other-photos img:nth-child(3),
-    .other-photos img:nth-child(4) {
-
-    }
 
 .footer {
-    /* Add your styles for the footer section here */
+    display: flex;
+    justify-content: space-between;
 }
 
-.hosted-by {
-    /* Add your styles for the "hosted by" section here */
+.hosted-by{
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 12pt;
+   width: 2065px;
 }
 
 .hosted-by h3 {
     font-weight: 250;
+    font-size: 17pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.spot-price {
+    font-size: 12pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .footer p {
-    max-width: 70%;
+    max-width: 90%;
+    margin-right: 67px;
+}
+
+.rating,
+.new {
+    background-color: pink;
+    color: black;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .pay-me-container {
-    display:flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    border:1px solid black
-
-}
-
-.pay-me-container h3 {
-    /* Add your styles for the price per night here */
+    display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 1190px;
+  padding-bottom: 10px;
+  align-items: center;
+  border: 3px solid black;
+  border-radius: 0.5rem;
+  gap: 0.25rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 105px;
 }
 
 .rating-reviews {
     display:flex;
+    align-items: center;
+    width: 327px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.rating {
-    /* Add your styles for the star rating here */
+.rating-reviews h3 {
+  font-size:16px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: normal;
 }
 
-.new {
-    /* Add your styles for the "New" label here */
+.price-p-tag{
+display: flex;
+justify-content: flex-start;
+margin-right: 10px;
 }
+
 
 .reserve-button {
-    /* Add your styles for the reserve button here */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  background-color: #FF5A5F;
+
+  box-shadow: 1px 5px 1px black;
+  color: white;
+  font-size: 12px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.rating-reviews-two {
+    display:flex;
+    align-items: center;
+    width: 305px;
+    font-weight: 250;
+    font-size: 17pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.rating-reviews-two p {
+    margin-right: 41px;
+}
+
+.rating-reviews-two h3 {
+    display:flex;
+    align-items: center;
+    width: 305px;
+    font-weight: 250;
+    font-size: 17pt;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.bottom-reviews {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    border: 1px solid rgb(112, 112, 112);
+    margin: 3px;
+    box-shadow: 5px 5px 5px #FF5A5F;
+    padding-left: 7px;
+
+}
+
+.Create-Review {
+    margin-bottom: 10px;
+}
+
+.bottom-reviews-bunch h3 {
+height:1px;
+padding-top: 1px;
+font-weight:normal;
+font-size: 15pt;
+}
+.bottom-reviews-bunch p  {
+color:grey;
+    }
+
+.be-the-first {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
