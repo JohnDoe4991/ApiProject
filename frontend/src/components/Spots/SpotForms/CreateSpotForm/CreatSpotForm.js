@@ -1,3 +1,12 @@
+
+import SpotForm from './SpotForm';
+
+export default function CreateSpotForm() {
+    return (
+        <SpotForm
+            formType="Create"
+        />
+
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -16,5 +25,6 @@ export default function CreateSpotForm({ spots }) {
 
             </form>
         </>
+
     )
 }
