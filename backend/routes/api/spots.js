@@ -199,8 +199,7 @@ router.get('/current', requireAuth, fixErrorProb, async (req, res) => {
     });
 
     let Spots = processSpots(allSpots)
-    const responseObj = { Spots };
-    res.json(responseObj);
+    res.json(Spots)
 });
 
 //get spot from an id

@@ -12,8 +12,6 @@ export default function SpotDetails() {
     const dispatch = useDispatch()
     const thisSpot = useSelector((state) => state.spots.singleSpot ? state.spots.singleSpot : null);
     const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
-    console.log("This Spot    ", thisSpot)
-    console.log("This Review    ", thisReview)
 
     useEffect(() => {
         dispatch(getDetailsThunk(spotId));

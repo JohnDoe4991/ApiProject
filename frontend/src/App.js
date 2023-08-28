@@ -5,6 +5,7 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import GetAllSpots from "./components/Spots/GetAllSpots";
 import SpotDetails from "./components/Spots/SpotDetails";
+import CreateSpotForm from "./components/Spots/SpotForms/CreateSpotForm/CreatSpotForm"
 
 function App() {
   const dispatch = useDispatch();
@@ -21,8 +22,14 @@ function App() {
           <Route exact path="/">
             <GetAllSpots />
           </Route>
-          <Route exact path="/spots/:spotId">
+          <Route path="/spots/new">
+            <CreateSpotForm />
+          </Route>
+          <Route path="/spots/:spotId">
             <SpotDetails />
+          </Route>
+          <Route path="/user/spots">
+            <GetAllSpots userSpots={true} />
           </Route>
           <Route>
             <h1>Page Not Found</h1>

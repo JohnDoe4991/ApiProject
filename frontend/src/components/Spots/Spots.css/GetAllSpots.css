@@ -93,3 +93,29 @@
     font-weight: normal;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
+.noShow {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  background-color: #fff;
+  color: black;
+  width:309px;
+}
+
+.update-delete button{
+  background-color: darkgrey;
+  color:white;
+  font-weight: normal;
+  margin-right: 10px;
+}
+
+.manager-spot,
+.manage-spots-h1-tag {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: normal;
+}
