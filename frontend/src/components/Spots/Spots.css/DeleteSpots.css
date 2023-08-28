@@ -1,0 +1,60 @@
+.delete-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 300px;
+    align-items: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.confirm-delete {
+    display: flex;
+    flex-direction: row;
+    font-weight: normal;
+    text-shadow: 2px 2px #9c6b6b;
+}
+
+.delete-writing{
+    display: flex;
+    flex-direction: row;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+.delete-da-bttn {
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  background-color: #FF5A5F;
+
+  box-shadow: 1px 5px 1px black;
+  color: white;
+  font-size: 12px;
+  /* font-weight: bold; */
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.cancel-delete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: #544d4d;
+
+    box-shadow: 1px 5px 1px black;
+    color: white;
+    font-size: 12px;
+    /* font-weight: bold; */
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
