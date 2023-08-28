@@ -5,7 +5,7 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import GetAllSpots from "./components/Spots/GetAllSpots";
 import SpotDetails from "./components/Spots/SpotDetails";
-import CreateSpotForm from "./components/Spots/SpotForms/CreateSpotForm/CreatSpotForm"
+import SpotForm from "./components/Spots/SpotForms/CreateSpotForm/SpotForm"
 
 function App() {
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ function App() {
             <GetAllSpots />
           </Route>
           <Route path="/spots/new">
-            <CreateSpotForm />
+            <SpotForm />
           </Route>
           <Route path="/spots/:spotId">
             <SpotDetails />
