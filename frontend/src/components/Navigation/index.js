@@ -19,13 +19,6 @@ function Navigation({ isLoaded }) {
           <NavLink exact to="/" className="navbar-logo">
             <img src={logo} alt="logo" className="logo" />
           </NavLink>
-          {/* {sessionUser && (
-            <div className="navBar-create-link">
-              <NavLink to="/spots/new" className="create-new-spot">
-                Create a New Spot
-              </NavLink>
-            </div>
-          )} */}
         </div>
         <div className="navBar-logo-create-link">
           {sessionUser && (
