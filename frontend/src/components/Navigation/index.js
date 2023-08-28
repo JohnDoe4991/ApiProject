@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import ProfileButton from "./ProfileButton";
-import logo from '../../logo/long-logo.png'
+import ruerrero from '../../logo/Ruerrero.png'
 import "./Navigation.css";
 
 
@@ -16,8 +16,8 @@ function Navigation({ isLoaded }) {
 
       <div className="navBar-inner-container">
         <div className="navBar-logo-create-link">
-          <NavLink exact to="/" className="navbar-logo">
-            <img src={logo} alt="logo" className="logo" />
+          <NavLink exact to="/" className="navbar-logo"> ViajarBnB
+            <img src={ruerrero} alt="logo" className="logo" />
           </NavLink>
         </div>
         <div className="navBar-logo-create-link">

@@ -33,20 +33,19 @@ export default function GetAllSpots({ userSpots = false }) {
     return (
         <>
             <div>
+                {userSpots && (
+                    <h1 className="manager-spot">Manage Your Spots</h1>
+                )}
                 <div className="spots-main-container">
                     {(userSpots && sessionUser) && (noShow === null || noShow.length <= 0) && (
                         <div className="owner-div manage-create-a-new-spot">
-                            <h2 className="manage-spots-h1-tag">Manage Your Spots</h2>
                             <button className="owner-btn create-new-spot-btn">
-                                <NavLink to="/spots/new" className="create-new-spot-owner" style={{ textDecoration: "none", color: "black", fontWeight: "bold"  }}>Create a New Spot</NavLink>
+                                <NavLink to="/spots/new" className="create-new-spot-owner" style={{ textDecoration: "none", color: "black", fontWeight: "bold" }}>Create a New Spot</NavLink>
                             </button>
                         </div>
                     )}
                     {spotShow && spotShow.map((spot) => (
                         <div>
-                            {userSpots && (
-                                <h1 className="manager-spot">Manage Your Spots</h1>
-                            )}
                             <Link
                                 key={spot.id}
                                 to={`/spots/${spot.id}`}
@@ -73,8 +72,8 @@ export default function GetAllSpots({ userSpots = false }) {
                             </Link>
                             {userSpots && <div className="manage-buttons">
                                 <div className="update-delete" >
-                                <button onClick={(e) => { history.push(`/spots/edit/${spot.id}`) }}>Update</button>
-                                <OpenModalButton className="delete-it" buttonText="Delete" modalComponent={<DeleteSpot spotId={spot.id} />} />
+                                    <button onClick={(e) => { history.push(`/spots/edit/${spot.id}`) }}>Update</button>
+                                    <OpenModalButton className="delete-it" buttonText="Delete" modalComponent={<DeleteSpot spotId={spot.id} />} />
                                 </div>
                             </div>}
                         </div>
