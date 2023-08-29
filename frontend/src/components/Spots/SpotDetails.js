@@ -8,7 +8,7 @@ import "./Spots.css/SpotDetails.css"
 
 export default function SpotDetails() {
     const { spotId } = useParams();
-
+    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch()
     const thisSpot = useSelector((state) => state.spots.singleSpot ? state.spots.singleSpot : null);
     const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
@@ -82,7 +82,7 @@ export default function SpotDetails() {
                     {thisSpot.numReviews !== undefined && thisSpot.numReviews === 1 && (<h3>· {"    "} {thisSpot.numReviews} {"    "}Review</h3>)}
                     {thisSpot && thisSpot.numReviews > 1 && <h3>· {"    "} {thisSpot.numReviews} {"    "}Reviews</h3>}
                 </div></h4>
-                <button className="Create-Review">Post Your Review</button>
+                <button className="create-Review">Post Your Review</button>
                 {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
                     <div className="bottom-reviews">
                         <div className="bottom-reviews-bunch">

@@ -64,9 +64,8 @@ export const getDetailsThunk = (spotId) => async (dispatch) => {
 
   if (res.ok) {
     const Spot = await res.json();
-
-
     dispatch(actionGetSpotDetails(Spot));
+    console.log("SpotId   ", spotId)
     return Spot;
   } else {
     const errors = await res.json();
@@ -139,14 +138,13 @@ export const thunkDeleteSpot =
 // Update Thunk
 
 export const updateThunker = (spot) => async (dispatch) => {
-  const response = await csrfFetch("/api/spots", {
+  const response = await csrfFetch(`/api/spots/${spot.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(spot),
   });
   if (response.ok) {
-    const data = response.json();
-
+    const data = await response.json();
     const action = getDetailsThunk(data.id);
     dispatch(action);
     return data;
