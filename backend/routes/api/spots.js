@@ -213,7 +213,7 @@ router.get('/:spotId', async (req, res) => {
             { model: User, attributes: ['id', 'firstName', 'lastName'] }
         ],
         order: [
-            [SpotImage, 'preview', 'DESC']  // This orders preview true images first
+            [SpotImage, 'preview', 'DESC']
         ]
     });
 
