@@ -144,10 +144,9 @@ export const updateThunker = (spot) => async (dispatch) => {
     body: JSON.stringify(spot),
   });
   if (response.ok) {
-    const data = response.json();
+    const data = await response.json();
     const action = getDetailsThunk(data.id);
     dispatch(action);
-    console.log("Spot updateThunk  ", spot, spot.id)
     return data;
   } else {
     console.warn("res in error: ", response)
