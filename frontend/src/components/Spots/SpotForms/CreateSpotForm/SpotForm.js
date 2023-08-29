@@ -26,7 +26,7 @@ export default function SpotForm({ formType, spotId }) {
 
 
     useEffect(() => {
-        if (formType === 'Edit') {
+        if (formType === 'Edit' && spotId) {
             dispatch(getDetailsThunk(spotId))
                 .then(data => {
 
@@ -46,7 +46,7 @@ export default function SpotForm({ formType, spotId }) {
 
 
 
-    const handleSubmit = e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const imageUrls = [previewImg, image1, image3, image4];
@@ -88,22 +88,25 @@ export default function SpotForm({ formType, spotId }) {
                     console.error("Error:", error);
                 });
         }
-    };
 
-    if (formType === "Edit") {
-        const fixedSpot = { address, city, state, country, lat, lng, name, description, price }
-        dispatch(updateThunker(fixedSpot))
-            .then(freshSpot => {
+        if (formType === "Edit") {
+            try {
+                const fixedSpot = { id: spotId, address, city, state, country, lat, lng, name, description, price };
+                const freshSpot = await dispatch(updateThunker(fixedSpot));
+                console.log((`/spots/${freshSpot.id}`))
                 if (freshSpot.id) {
-                    history.push(`/spots/${fixedSpot.id}`);
+                    history.push(`/spots/${freshSpot.id}`);
                 } else {
                     return null;
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Error:", error);
-            });
+            }
+        }
     };
+
+
+
 
     useEffect(() => {
         const errorsObject = {};
