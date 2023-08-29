@@ -1,0 +1,172 @@
+
+.set-straight input,
+textarea{
+    background-color: #e1f3fd;
+ }
+
+
+ .set-straight h2 {
+    margin-bottom: -12px;
+    font-weight: normal;
+ }
+
+
+ .set-straight h1 {
+margin-bottom: -8px;
+font-weight: normal;
+ }
+
+
+ .set-straight label {
+    font-weight: normal;
+     }
+
+
+.set-straight {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 437px;
+    margin-left: 284px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: normal;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding-left:3px;
+    margin-top: 21px;
+    background-color: #ededea;
+}
+
+.city-state-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.photo-url {
+display: flex;
+flex-direction: column;
+margin:0px;
+}
+
+.photo-url input {
+margin-top: 10px;
+margin-bottom: 10px;
+height: 14px;
+width: 426px
+    }
+
+.create-ittt button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 108px;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    background-color: #FF5A5F;
+
+    box-shadow: 1px 5px 1px black;
+    color: white;
+    font-size: 12px;
+    /* font-weight: bold; */
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-right: 30px;
+    margin-left: 34px;
+}
+
+.create-ittt {
+    margin-left: 120px;
+}
+
+.make-title input {
+    height: 16px;
+    width: 426px;
+}
+
+.set-price input {
+    height: 16px;
+    margin-left:5px;
+    width: 414px;
+    margin-bottom: 11px;
+}
+
+.describe-guests textarea {
+    width: 426px;
+    height: 122px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-top: 23px;
+}
+
+.describe-guests {
+    margin-top: 24px;
+}
+
+.flex-it{
+    display: flex;
+}
+
+.fix-width {
+    width: 426px;
+}
+
+.fix-width-one {
+    width: 426px;
+    margin-bottom: 10px;
+}
+
+.city-city-bang-bang{
+    width: 241px;
+}
+
+.comma {
+    margin-top: 20px;
+}
+
+.error {
+    height: 35px;
+    display:flex;
+}
+
+.errors {
+    color:red;
+    font-size: 10pt;
+    margin:0;
+    height: 13px;
+    margin-top: 19px;
+    padding-left: 5px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.desc-errors {
+    color:red;
+    font-size: 10pt;
+    margin:0;
+    height: 13px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.name-errors {
+    color:red;
+    height: 13px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 10pt;
+    margin-bottom: 28px;
+}
+
+.price-errors {
+    color:red;
+    height: 13px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 10pt;
+}
+
+.photo-errors {
+    color:red;
+    height: 13px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 10pt;
+    margin:0;
+}

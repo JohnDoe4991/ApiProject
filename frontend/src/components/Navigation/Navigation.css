@@ -32,7 +32,8 @@
   border-radius: 10px;
 display: flex;
 border: 1px solid white;
-padding-left: 6px;
+padding-left: 14px;
+border: 2px solid rgb(0, 0, 0);
 }
 
 .navbar-logo img {
@@ -40,7 +41,7 @@ padding-left: 6px;
   display: flex;
   justify-content: flex-start;
   border-radius: 10px;
-  padding-left: 20px;
+  padding-left: 29px;
 }
 
 .create-new-spot {
