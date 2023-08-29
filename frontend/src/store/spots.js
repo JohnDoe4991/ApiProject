@@ -9,6 +9,7 @@ const GET_ALL_SPOTS_OF_CURRENT_USER = "/get_all_spots_of_user"; //read. // GET s
 const GET_SPOT_DETAILS = "/spot_details"
 const CREATE_SPOT = "/create_spot"
 const DELETE_SPOT = "/delete_spot"
+const UPDATE_SPOT = "/update_spot"
 
 
 
@@ -97,7 +98,7 @@ const createSpotImage = async (spotId, imageObj) => {
   return response.json();
 }
 
-export const createSpotThunk = (newSpot, newSpotImage, sessionUser) => async (dispatch) => {
+export const createSpotThunk = (newSpot, newSpotImage, sessionUser,) => async (dispatch) => {
   try {
     const newlyCreateSpot = await createSpot(newSpot);
 
@@ -134,6 +135,27 @@ export const thunkDeleteSpot =
       return errors;
     }
   };
+
+// Update Thunk
+
+export const updateThunker = (spot) => async (dispatch) => {
+  const response = await csrfFetch("/api/spots", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(spot),
+  });
+  if (response.ok) {
+    const data = response.json();
+
+    const action = getDetailsThunk(data.id);
+    dispatch(action);
+    return data;
+  } else {
+    console.warn("res in error: ", response)
+    const errors = response.json();
+    return errors;
+  }
+}
 
 
 // normalizeArr
@@ -177,6 +199,10 @@ export default function spotReducer(state = initialState, action) {
       delete newState.allSpots[action.id];
       return newState;
     }
+    case UPDATE_SPOT:
+      newState = { ...state, singleSpot: {} };
+      newState.singleSpot = action.spot
+      return newState;
     default:
       return state;
   }

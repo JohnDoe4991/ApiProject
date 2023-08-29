@@ -59,7 +59,7 @@ export default function SpotDetails() {
                 </div>
                 <div className="footer">
                     <div className="hosted-by">
-                        <h3>Hosted by {thisSpot.User.firstName}{" "}{thisSpot.User.lastName}</h3>
+                        <h3>Hosted by {thisSpot.User && thisSpot.User.firstName}{" "}{thisSpot.User && thisSpot.User.lastName}</h3>
                         <p>{thisSpot.description}</p>
                     </div>
                     <div className="pay-me-container">
