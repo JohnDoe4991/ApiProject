@@ -60,11 +60,11 @@ function ProfileButton({ user }) {
         <ul className={ulClassName} ref={ulRef}>
           {user ? (
             <>
-              <li>{user.username}</li>
-              <li>{user.firstName} {user.lastName}</li>
-              <li>{user.email}</li>
-              <li><button className="Manage-spot-button" onClick={(e) => {closeMenu(); history.push('/user/spots') }}>Manage Spots</button></li>
-              <li><button type="button" onClick={(e) => { history.push('/reviews/current') }}>Manage Reviews</button></li>
+              <li className="username">{user.username}</li>
+              <li>Hello, {user.firstName}</li>
+              <li className="email">{user.email}</li>
+              <li><button className="manage-spot-button" onClick={(e) => { closeMenu(); history.push('/user/spots') }}>Manage Spots</button></li>
+              <li><button className="buttons-one" type="button" onClick={(e) => { history.push('/reviews/current') }}>Manage Reviews</button></li>
               <li><button onClick={logout} className="buttons">Log Out</button></li>
             </>
           ) : (
