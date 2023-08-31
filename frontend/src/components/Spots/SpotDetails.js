@@ -23,16 +23,15 @@ export default function SpotDetails() {
 
     useEffect(() => {
         dispatch(getDetailsThunk(spotId));
-        dispatch(getAllReviewsThunk(spotId))
-    }, [dispatch, spotId]);
+        dispatch(getAllReviewsThunk(spotId)).finally(() => setLoading(false))
+    }, [dispatch, spotId, reloadPage]);
 
 
     const isUserTalking = sessionUser
         ? Object.values(thisReview).find(reviewsArray =>
-            reviewsArray.find(review => review.userId === sessionUser.id)
+            Object.values(reviewsArray).find(review => review.userId === sessionUser.id)
         )
         : {};
-
 
 
     if (!thisSpot) {
@@ -53,11 +52,6 @@ export default function SpotDetails() {
         });
         return formatter.format(date);
     };
-
-
-    console.log("this review object..", Object.values(thisReview))
-    console.log("session user.....", sessionUser)
-    console.log("thisSpot......", thisSpot)
 
     return (
         <>
@@ -107,7 +101,9 @@ export default function SpotDetails() {
                     <OpenModalButton
                         buttonText="Post Your Review"
                         modalComponent={<CreateReviewModal
-                            spotId={thisSpot.id} />} />
+                            spotId={thisSpot.id}
+                            setReloadPage={setReloadPage}
+                        />} />
                 </div>}
                 {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
                     <div className="bottom-reviews">
