@@ -32,7 +32,7 @@ export const getAllReviewsThunk = (spotId) => async (dispatch) => {
     }
 };
 
-export const createReview = (spotId, review, stars) => async (dispatch) => {
+export const createReviewThunk = (spotId, review, stars) => async (dispatch) => {
     const req = await csrfFetch(`/api/spots/${spotId}/reviews`, {
         method: "POST",
         headers: {
@@ -61,11 +61,9 @@ export default function reviewReducer(state = initialState, action) {
             newState.reviews.spot = action.reviews
             return newState;
         case POST_REVIEW:
-            console.log("STATE before, ", state)
-            newState = { ...state, reviews: { spot: {}, user: {} } };
-            newState.reviews.spot = action.review
-            console.log("STATE after, ", state)
-            return newState
+            newState = { ...state, reviews: { ...state.reviews, spot: { ...state.reviews.spot } } };
+            newState.reviews.spot[action.review.id] = action.review;
+            return newState;
         default:
             return state;
     }

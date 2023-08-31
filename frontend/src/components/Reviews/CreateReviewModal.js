@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "./review.css/CreateReview.css"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { createReviewThunk } from "../../store/reviews";
+import { useModal } from "../../context/Modal"
 
 
 
 
-export default function CreateReviewModal() {
+export default function CreateReviewModal({ spotId, setReloadPage }) {
     const sessionUser = useSelector((state) => state.session.user);
+    const { closeModal } = useModal();
+    const dispatch = useDispatch()
     const [review, setReview] = useState("")
+    const [stars, setStars] = useState(0)
+    const [errors, setErrors] = useState({});
+    const [message, setMessage] = useState('');
+    const [disableSubmitButton, setdisableSubmitButton] = useState(true);
     const [hoveredStars, setHoveredStars] = useState(0);
     const [selectedStars, setSelectedStars] = useState(0);
     const [validationObject, setValidationObject] = useState({})
@@ -21,6 +29,7 @@ export default function CreateReviewModal() {
     };
 
     const handleStarClick = (stars) => {
+        setStars(stars)
         setSelectedStars(stars);
     };
 
@@ -32,10 +41,6 @@ export default function CreateReviewModal() {
             errorsObject.review = "Review must be more than 10 characters."
         }
 
-        if (sessionUser.review) {
-            errorsObject.review = "Review already exists for this spot"
-        }
-
         if (!selectedStars) {
             errorsObject.selectedStars = "Please select a star rating"
         }
@@ -45,16 +50,46 @@ export default function CreateReviewModal() {
         setValidationObject(errorsObject)
     }, [selectedStars, review])
 
+    useEffect(() => {
+        setdisableSubmitButton(!(stars >= 1 && review.length >= 10));
+    }, [stars, review]);
+
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await dispatch(createReviewThunk(spotId, review, stars));
+            closeModal();
+            setReloadPage(prevState => !prevState);
+        } catch (error) {
+            try {
+                const data = await error.json();
+                if (data && data.errors) {
+                    setErrors(data.errors);
+                } else {
+                    setMessage(data.message);
+                }
+            } catch (jsonError) {
+
+                console.error('Error parsing JSON:', jsonError);
+            }
+        }
+    };
+
+
     return (
         <>
-            <div className="main-container-reviews">
+            <form className="main-container-reviews"
+                onSubmit={handleSubmit}>
                 <h1 className="howty-stay">How was your stay?</h1>
                 <div className="error-box">
-                {validationObject.review && <p
-                                className="errors-one"> {validationObject.review}</p>}
-                                {validationObject.selectedStars && <p
-                                className="errors-one"> {validationObject.selectedStars}</p>}
-                                </div>
+                    {validationObject.review && <p
+                        className="errors-one"> {validationObject.review}</p>}
+                    {validationObject.selectedStars && <p
+                        className="errors-one"> {validationObject.selectedStars}</p>}
+                </div>
                 <textarea
                     type="text"
                     name="review"
@@ -83,7 +118,7 @@ export default function CreateReviewModal() {
                     disabled={Object.keys(validationObject).length > 0}
                 >
                     Submit Your Review</button>
-            </div>
+            </form>
         </>
     )
 }
