@@ -22,16 +22,20 @@ module.exports = {
         hooks: true
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        isAlpha: true,
       },
       city: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        isAlpha: true,
       },
       state: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        isAlpha: true,
       },
       country: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        isAlpha: true,
       },
       lat: {
         type: Sequelize.DECIMAL
@@ -43,7 +47,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        isAlpha: true,
       },
       price: {
         type: Sequelize.DECIMAL
