@@ -47,7 +47,49 @@ export default function SpotForm({ formType, spotId }) {
 
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
+
+        const errorsObject = {};
+
+        if (!address) {
+            errorsObject.address = "Address is required"
+        }
+        if (!city) {
+            errorsObject.city = "City is required"
+        }
+        if (!state) {
+            errorsObject.state = "State is required"
+        }
+        if (!lng) {
+            errorsObject.lng = "Long required"
+        }
+        if (!lat) {
+            errorsObject.lat = "Lat required"
+        }
+        if (!country) {
+            errorsObject.country = "Country is required"
+        }
+        if (!name) {
+            errorsObject.name = "Name is required"
+        }
+        if (description.length < 30) {
+            errorsObject.description = "Description needs a minimum of 30 characters"
+        }
+        if (!price) {
+            errorsObject.price = "Price is required"
+        }
+        if(formType === "Create"){
+
+            if (!previewImg) {
+                errorsObject.previewImg = "Preview Image is required"
+            }
+        }
+        if (Object.keys(errorsObject).length) {
+            setValidationObject(errorsObject)
+            return;
+        }
+
 
         const imageUrls = [previewImg, image1, image3, image4];
         const imageExtensionsRegex = /\.(png|jpe?g)$/i;
@@ -76,17 +118,19 @@ export default function SpotForm({ formType, spotId }) {
         tempNewSpotImage.forEach((image) => { if (image.url) newSpotImage.push(image); });
 
         if (formType === "Create") {
-            dispatch(createSpotThunk(createdSpot, newSpotImage, sessionUser))
-                .then(freshSpot => {
-                    if (freshSpot.id) {
-                        history.push(`/spots/${freshSpot.id}`);
-                    } else {
-                        return null;
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+            try {
+                const freshSpot = await dispatch(createSpotThunk(createdSpot, newSpotImage, sessionUser));
+
+                if (freshSpot.id) {
+                    const newSpotAdded = await dispatch(getDetailsThunk(freshSpot.id))
+
+                    history.push(`/spots/${newSpotAdded.id}`);
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
         }
 
         if (formType === "Edit") {
@@ -108,42 +152,42 @@ export default function SpotForm({ formType, spotId }) {
 
 
 
-    useEffect(() => {
-        const errorsObject = {};
-        if (formType === "Create") {
-            if (!address) {
-                errorsObject.address = "Address is required"
-            }
-            if (!city) {
-                errorsObject.city = "City is required"
-            }
-            if (!state) {
-                errorsObject.state = "State is required"
-            }
-            if (!lng) {
-                errorsObject.lng = "Long required"
-            }
-            if (!lat) {
-                errorsObject.lat = "Lat required"
-            }
-            if (!country) {
-                errorsObject.country = "Country is required"
-            }
-            if (!name) {
-                errorsObject.name = "Name is required"
-            }
-            if (description.length < 30) {
-                errorsObject.description = "Description needs a minimum of 30 characters"
-            }
-            if (!price) {
-                errorsObject.price = "Price is required"
-            }
-            if (!previewImg) {
-                errorsObject.previewImg = "Preview Image is required"
-            }
-            setValidationObject(errorsObject)
-        }
-    }, [address, city, state, country, lat, lng, name, description, price, previewImg])
+    // useEffect(() => {
+    //     const errorsObject = {};
+
+    //     if (!address) {
+    //         errorsObject.address = "Address is required"
+    //     }
+    //     if (!city) {
+    //         errorsObject.city = "City is required"
+    //     }
+    //     if (!state) {
+    //         errorsObject.state = "State is required"
+    //     }
+    //     if (!lng) {
+    //         errorsObject.lng = "Long required"
+    //     }
+    //     if (!lat) {
+    //         errorsObject.lat = "Lat required"
+    //     }
+    //     if (!country) {
+    //         errorsObject.country = "Country is required"
+    //     }
+    //     if (!name) {
+    //         errorsObject.name = "Name is required"
+    //     }
+    //     if (description.length < 30) {
+    //         errorsObject.description = "Description needs a minimum of 30 characters"
+    //     }
+    //     if (!price) {
+    //         errorsObject.price = "Price is required"
+    //     }
+    //     if (!previewImg) {
+    //         errorsObject.previewImg = "Preview Image is required"
+    //     }
+    //     setValidationObject(errorsObject)
+
+    // }, [address, city, state, country, lat, lng, name, description, price, previewImg])
 
     const clearImageError = (fieldName) => {
         if (validationObject[fieldName]) {
@@ -174,6 +218,8 @@ export default function SpotForm({ formType, spotId }) {
                             placeholder="Country"
                             value={country}
                             onChange={(e) => setCountry(e.target.value)}
+                            pattern="[^0-9]*"
+                            title="Country should only contain letters"
                         />
                     </label>
                     <label>
@@ -189,6 +235,7 @@ export default function SpotForm({ formType, spotId }) {
                             placeholder="Address"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
+
                         />
                     </label>
                     <div className="city-state-inputs">
@@ -205,6 +252,8 @@ export default function SpotForm({ formType, spotId }) {
                                 placeholder="City"
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
+                                pattern="[^0-9]*"
+                                title="City should only contain letters"
                             />
                         </label>
                         <label>
@@ -219,6 +268,8 @@ export default function SpotForm({ formType, spotId }) {
                                 placeholder="State"
                                 value={state}
                                 onChange={(e) => setState(e.target.value)}
+                                pattern="[^0-9]*"
+                                title="State should only contain letters"
                             />
                         </label>
                     </div>
