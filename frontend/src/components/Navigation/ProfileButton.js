@@ -60,8 +60,8 @@ function ProfileButton({ user }) {
         <ul className={ulClassName} ref={ulRef}>
           {user ? (
             <>
+              <li className="wazzzup">Hello, {user.firstName}</li>
               <li className="username">{user.username}</li>
-              <li>Hello, {user.firstName}</li>
               <li className="email">{user.email}</li>
               <li><button className="manage-spot-button" onClick={(e) => { closeMenu(); history.push('/user/spots') }}>Manage Spots</button></li>
               <li><button className="buttons-one" type="button" onClick={(e) => { history.push('/reviews/current') }}>Manage Reviews</button></li>
