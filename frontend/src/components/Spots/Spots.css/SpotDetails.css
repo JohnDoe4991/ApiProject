@@ -194,13 +194,13 @@ color:grey;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.create-Review {
-    background-color: darkgrey;
+.create-Review button {
+    background-color: rgb(109, 109, 109);
     color:white;
     font-weight: normal;
     margin-right: 10px;
 }
 
-  .create-Review:hover {
+  .create-Review button:hover {
     cursor:pointer;
   }

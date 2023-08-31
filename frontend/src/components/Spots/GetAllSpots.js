@@ -22,8 +22,6 @@ export default function GetAllSpots({ userSpots = false }) {
         }
     }, [dispatch, userSpots])
 
-    console.log("Session User", sessionUser)
-    console.log("allSpotz", allSpotzArr)
 
     const spotShow = userSpots ? allSpotzArr.filter((spot) => sessionUser.id === spot.ownerId) : allSpotzArr;
     const noShow = userSpots ? allSpotzArr.filter((spot) => sessionUser.id === spot.ownerId) : null;

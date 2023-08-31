@@ -228,7 +228,7 @@ border: 2px solid rgb(0, 0, 0);
 }
 
 .username{
-  margin-right: 18px;
+  margin-right: 20px;
 }
 
 .email {
@@ -236,6 +236,7 @@ border: 2px solid rgb(0, 0, 0);
     margin-left: -3px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-shadow: 2px 2px pink;
+    margin-right: 22px;
 }
 
 .button{
@@ -254,4 +255,8 @@ border: 2px solid rgb(0, 0, 0);
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   margin-right: 10px;
   text-shadow: 2px 2px pink;
+}
+
+.wazzzup{
+  margin-right: 36px;
 }

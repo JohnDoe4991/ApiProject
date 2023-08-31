@@ -3,20 +3,37 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailsThunk } from "../../store/spots";
 import { getAllReviewsThunk } from "../../store/reviews";
+import OpenModalButton from "../OpenModalButton/index"
 import "./Spots.css/SpotDetails.css"
+import CreateReviewModal from "../Reviews/CreateReviewModal";
+import { useModal } from "../../context/Modal"
 
 
 export default function SpotDetails() {
     const { spotId } = useParams();
+    const [reloadPage, setReloadPage] = useState(false);
     const [loading, setLoading] = useState(true);
+
     const dispatch = useDispatch()
     const thisSpot = useSelector((state) => state.spots.singleSpot ? state.spots.singleSpot : null);
     const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
+    const sessionUser = useSelector((state) => state.session.user);
+
+
 
     useEffect(() => {
         dispatch(getDetailsThunk(spotId));
         dispatch(getAllReviewsThunk(spotId))
     }, [dispatch, spotId]);
+
+
+    const isUserTalking = sessionUser
+        ? Object.values(thisReview).find(reviewsArray =>
+            reviewsArray.find(review => review.userId === sessionUser.id)
+        )
+        : {};
+
+
 
     if (!thisSpot) {
         return null;
@@ -37,6 +54,10 @@ export default function SpotDetails() {
         return formatter.format(date);
     };
 
+
+    console.log("this review object..", Object.values(thisReview))
+    console.log("session user.....", sessionUser)
+    console.log("thisSpot......", thisSpot)
 
     return (
         <>
@@ -82,7 +103,12 @@ export default function SpotDetails() {
                     {thisSpot.numReviews !== undefined && thisSpot.numReviews === 1 && (<h3>· {"    "} {thisSpot.numReviews} {"    "}Review</h3>)}
                     {thisSpot && thisSpot.numReviews > 1 && <h3>· {"    "} {thisSpot.numReviews} {"    "}Reviews</h3>}
                 </div></h4>
-                <button className="create-Review">Post Your Review</button>
+                {(!isUserTalking) && (thisSpot.User.id !== sessionUser.id) && <div className="create-Review">
+                    <OpenModalButton
+                        buttonText="Post Your Review"
+                        modalComponent={<CreateReviewModal
+                            spotId={thisSpot.id} />} />
+                </div>}
                 {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
                     <div className="bottom-reviews">
                         <div className="bottom-reviews-bunch">
