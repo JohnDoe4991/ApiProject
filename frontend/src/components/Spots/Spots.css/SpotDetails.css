@@ -173,7 +173,13 @@ margin-right: 10px;
     margin: 3px;
     box-shadow: 5px 5px 5px #FF5A5F;
     padding-left: 7px;
+    height: 138px;
+}
 
+.pushin-p {
+    margin-bottom:7px;
+    margin-top: -8px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .Create-Review {
@@ -185,9 +191,13 @@ height:1px;
 padding-top: 1px;
 font-weight:normal;
 font-size: 15pt;
+margin-bottom: 23px;
+font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+margin-left: 3px;
 }
 .bottom-reviews-bunch p  {
 color:grey;
+margin-top:3px;
     }
 
 .be-the-first {
@@ -199,8 +209,27 @@ color:grey;
     color:white;
     font-weight: normal;
     margin-right: 10px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
   .create-Review button:hover {
     cursor:pointer;
+  }
+
+  .bottom-reviews button {
+    margin-left: 13px;
+    height: 26px;
+    width: 76px;
+    background-color: #FF5A5F;
+    font-size: 13pt;
+    font-weight: bold;
+    color: white;
+    border-radius: 9px;
+    text-shadow: 3px 2px black;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+
+  .datedate{
+    padding-top: 4px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
