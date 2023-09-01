@@ -106,14 +106,14 @@ export default function SpotDetails() {
                             setReloadPage={setReloadPage}
                         />} />
                 </div>}
-                {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
+                {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.slice().reverse().map((review, index) => (
                     <div className="bottom-reviews">
                         <div key={index} className="bottom-reviews-bunch">
                             <h3>{review.User.firstName}</h3>
-                            <p> {fixDate(review.createdAt)} </p>
+                            <p className="datedate"> {fixDate(review.createdAt)} </p>
                         </div>
-                        <p> "{review.review}" </p>
-                        {review.userId === sessionUser.id && <OpenModalButton className="" buttonText="Delete" modalComponent={<DeleteReview reviewId={review.id} spotId={thisSpot.id} setReloadPage={setReloadPage} />} />}
+                        <p className="pushin-p"> "{review.review}" </p>
+                        {review.userId === sessionUser.id && <OpenModalButton  buttonText="Delete" modalComponent={<DeleteReview reviewId={review.id} spotId={thisSpot.id} setReloadPage={setReloadPage} />} />}
                     </div>
                 )))) : (<div className="be-the-first"> Be the first to post a review! </div>)}
             </div>
