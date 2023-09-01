@@ -58,39 +58,6 @@ export const getOwnerAllSpotsThunk = () => async (dispatch) => {
   }
 };
 
-//Create Spot
-export const createSpotThunk = (newSpot, newSpotImage, sessionUser) => async (dispatch) => {
-
-  const res = await csrfFetch("/api/spots", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newSpot),
-  })
-
-  if (res.ok) {
-    const newSpot = await res.json();
-
-    const newImage = await Promise.all(newSpotImage.map(async (imageObj) => {
-      const imageRes = await csrfFetch(`/api/spots/${newSpot.id}/images`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(imageObj),
-      });
-      if (imageRes.ok) {
-        const imageData = await imageRes.json();
-        return imageData;
-      }
-    }));
-    newSpot.SpotImages = newImage;
-    newSpot.creatorName = sessionUser.username;
-    dispatch(actionCreateSpot(newSpot));
-    return newSpot;
-  } else {
-    const errors = res.json();
-    return errors;
-  }
-}
-
 
 export const getDetailsThunk = (spotId) => async (dispatch) => {
   const res = await csrfFetch(`/api/spots/${spotId}`);
@@ -106,9 +73,46 @@ export const getDetailsThunk = (spotId) => async (dispatch) => {
   }
 };
 
+const createSpot = async (spot) => {
+  const response = await csrfFetch("/api/spots", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(spot),
+  });
 
+  if (!response.ok) throw new Error('Failed to create spot');
 
+  return response.json();
+}
 
+const createSpotImage = async (spotId, imageObj) => {
+  const response = await csrfFetch(`/api/spots/${spotId}/images`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(imageObj),
+  });
+
+  if (!response.ok) throw new Error(`Failed to upload image for spotId: ${spotId}`);
+
+  return response.json();
+}
+
+export const createSpotThunk = (newSpot, newSpotImage, sessionUser,) => async (dispatch) => {
+  try {
+    const newlyCreateSpot = await createSpot(newSpot);
+
+    const newPhoto = await Promise.all(newSpotImage.map(imageObj => createSpotImage(newlyCreateSpot.id, imageObj)));
+
+    newlyCreateSpot.SpotImages = newPhoto;
+    newlyCreateSpot.creatorName = sessionUser.username;
+
+    dispatch(actionCreateSpot(newlyCreateSpot));
+    return newlyCreateSpot;
+  } catch (error) {
+    console.error("Error in createSpotThunk:", error);
+    return { error: error.message };
+  }
+};
 
 //Delete Thunk
 
@@ -184,15 +188,14 @@ export default function spotReducer(state = initialState, action) {
       newState = { ...state };
       newState.singleSpot = action.spot
       return newState;
-    case DELETE_SPOT: {
-      const newState = {
+    case DELETE_SPOT:
+      newState = {
         ...state,
         allSpots: { ...state.allSpots },
         spotDetails: {},
       };
       delete newState.allSpots[action.id];
       return newState;
-    }
     case UPDATE_SPOT:
       newState = { ...state, singleSpot: {} };
       newState.singleSpot = action.spot

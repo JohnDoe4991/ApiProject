@@ -79,7 +79,7 @@ export default function SpotForm({ formType, spotId }) {
         if (!price) {
             errorsObject.price = "Price is required"
         }
-        if(formType === "Create"){
+        if (formType === "Create") {
 
             if (!previewImg) {
                 errorsObject.previewImg = "Preview Image is required"
@@ -149,45 +149,6 @@ export default function SpotForm({ formType, spotId }) {
         }
     };
 
-
-
-
-    // useEffect(() => {
-    //     const errorsObject = {};
-
-    //     if (!address) {
-    //         errorsObject.address = "Address is required"
-    //     }
-    //     if (!city) {
-    //         errorsObject.city = "City is required"
-    //     }
-    //     if (!state) {
-    //         errorsObject.state = "State is required"
-    //     }
-    //     if (!lng) {
-    //         errorsObject.lng = "Long required"
-    //     }
-    //     if (!lat) {
-    //         errorsObject.lat = "Lat required"
-    //     }
-    //     if (!country) {
-    //         errorsObject.country = "Country is required"
-    //     }
-    //     if (!name) {
-    //         errorsObject.name = "Name is required"
-    //     }
-    //     if (description.length < 30) {
-    //         errorsObject.description = "Description needs a minimum of 30 characters"
-    //     }
-    //     if (!price) {
-    //         errorsObject.price = "Price is required"
-    //     }
-    //     if (!previewImg) {
-    //         errorsObject.previewImg = "Preview Image is required"
-    //     }
-    //     setValidationObject(errorsObject)
-
-    // }, [address, city, state, country, lat, lng, name, description, price, previewImg])
 
     const clearImageError = (fieldName) => {
         if (validationObject[fieldName]) {

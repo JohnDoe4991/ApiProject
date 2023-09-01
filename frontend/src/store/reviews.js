@@ -6,12 +6,14 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_REVIEWS = "reviews/GET_REVIEWS"
 const POST_REVIEW = "reviews/POST_REVIEW"
+const DELETE_REVIEW = "reviews/DELETE_REVIEWS"
 
 
 //action creator
 
 const actionGetReview = (reviews) => ({ type: GET_ALL_REVIEWS, reviews });
-const actionCreateReview = (review) => ({ type: POST_REVIEW, review })
+const actionCreateReview = (review) => ({ type: POST_REVIEW, review });
+const actionDeleteReview = (reviewId) => ({ type: DELETE_REVIEW, reviewId });
 
 
 //Thunks
@@ -45,6 +47,25 @@ export const createReviewThunk = (spotId, review, stars) => async (dispatch) => 
     return data;
 };
 
+export const thunkDeleteReview =
+    (reviewId) => async (dispatch) => {
+        const res = await csrfFetch(`/api/reviews/${reviewId}`, {
+            method: "DELETE",
+        });
+
+        if (res.ok) {
+            const data = res.json();
+
+            const action = actionDeleteReview(data);
+            dispatch(action);
+            return data;
+        } else {
+            console.warn("res in error: ", res)
+            const errors = res.json();
+            return errors;
+        }
+    };
+
 
 // normalizeArr
 
@@ -63,6 +84,17 @@ export default function reviewReducer(state = initialState, action) {
         case POST_REVIEW:
             newState = { ...state, reviews: { ...state.reviews, spot: { ...state.reviews.spot } } };
             newState.reviews.spot[action.review.id] = action.review;
+            return newState;
+        case DELETE_REVIEW:
+            newState = {
+                ...state,
+                reviews: {
+                    ...state.reviews,
+                    spot: { ...state.reviews.spot },
+                    user: { ...state.reviews.user },
+                },
+            };
+            delete newState.reviews.spot[action.reviewId];
             return newState;
         default:
             return state;
