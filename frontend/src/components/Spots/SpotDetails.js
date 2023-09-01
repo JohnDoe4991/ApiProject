@@ -6,7 +6,8 @@ import { getAllReviewsThunk } from "../../store/reviews";
 import OpenModalButton from "../OpenModalButton/index"
 import "./Spots.css/SpotDetails.css"
 import CreateReviewModal from "../Reviews/CreateReviewModal";
-import { useModal } from "../../context/Modal"
+import { useModal } from "../../context/Modal";
+import DeleteReview from "../Reviews/DeleteReview";
 
 
 export default function SpotDetails() {
@@ -18,7 +19,6 @@ export default function SpotDetails() {
     const thisSpot = useSelector((state) => state.spots.singleSpot ? state.spots.singleSpot : null);
     const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
     const sessionUser = useSelector((state) => state.session.user);
-
 
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function SpotDetails() {
         return formatter.format(date);
     };
 
-    
+
 
     return (
         <>
@@ -108,11 +108,12 @@ export default function SpotDetails() {
                 </div>}
                 {thisReview.Reviews && thisReview.Reviews.length >= 1 ? ((thisReview.Reviews.map((review, index) => (
                     <div className="bottom-reviews">
-                        <div className="bottom-reviews-bunch">
+                        <div key={index} className="bottom-reviews-bunch">
                             <h3>{review.User.firstName}</h3>
                             <p> {fixDate(review.createdAt)} </p>
                         </div>
                         <p> "{review.review}" </p>
+                        {review.userId === sessionUser.id && <OpenModalButton className="" buttonText="Delete" modalComponent={<DeleteReview reviewId={review.id} spotId={thisSpot.id} setReloadPage={setReloadPage} />} />}
                     </div>
                 )))) : (<div className="be-the-first"> Be the first to post a review! </div>)}
             </div>
