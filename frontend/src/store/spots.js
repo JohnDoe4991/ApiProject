@@ -65,7 +65,7 @@ export const getDetailsThunk = (spotId) => async (dispatch) => {
   if (res.ok) {
     const Spot = await res.json();
     dispatch(actionGetSpotDetails(Spot));
-    console.log("SpotId   ", spotId)
+
     return Spot;
   } else {
     const errors = await res.json();
