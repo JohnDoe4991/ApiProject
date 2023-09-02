@@ -143,6 +143,7 @@ export default function SpotDetails() {
     const thisReview = useSelector((state) => state.reviews.reviews.spot ? state.reviews.reviews.spot : null);
     const sessionUser = useSelector((state) => state.session.user);
 
+    console.log("ss......", sessionUser)
 
     useEffect(() => {
         dispatch(getDetailsThunk(spotId));

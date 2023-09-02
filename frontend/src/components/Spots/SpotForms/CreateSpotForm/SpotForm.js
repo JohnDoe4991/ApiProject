@@ -12,11 +12,11 @@ export default function SpotForm({ formType, spotId }) {
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
-    const [lat, setLat] = useState("");
-    const [lng, setLng] = useState("");
+    const [lat, setLat] = useState(1);
+    const [lng, setLng] = useState(1);
     const [description, setDescription] = useState("");
     const [name, setName] = useState("");
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState("");
     const [previewImg, setPreviewImg] = useState("");
     const [image1, setImage1] = useState("");
     const [image2, setImage2] = useState("");
@@ -45,50 +45,76 @@ export default function SpotForm({ formType, spotId }) {
 
 
 
+    const validateCommonFields = () => {
+        const errors = {};
+
+        if (!address) errors.address = "Address is required";
+        if (!country) errors.country = "Country is required";
+        if (!city) errors.city = "City is required";
+        if (!state) errors.state = "State is required";
+        // if (!lat) errors.lat = "Latitude is required";
+        // if (!lng) errors.lng = "Longitude is required";
+        if (!name) errors.name = "Name is required";
+        if (description.length < 30) errors.description = "Description needs a minimum of 30 characters";
+        if (!price) errors.price = "Price is required";
+
+        return errors;
+    };
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        const errorsObject = {};
+        let errorsObj = validateCommonFields();
+        if (formType === "Create" && !previewImg)
+            errorsObj.previewImg = "Preview Image is required";
 
-        if (!address) {
-            errorsObject.address = "Address is required"
-        }
-        if (!city) {
-            errorsObject.city = "City is required"
-        }
-        if (!state) {
-            errorsObject.state = "State is required"
-        }
-        if (!lng) {
-            errorsObject.lng = "Long required"
-        }
-        if (!lat) {
-            errorsObject.lat = "Lat required"
-        }
-        if (!country) {
-            errorsObject.country = "Country is required"
-        }
-        if (!name) {
-            errorsObject.name = "Name is required"
-        }
-        if (description.length < 30) {
-            errorsObject.description = "Description needs a minimum of 30 characters"
-        }
-        if (!price) {
-            errorsObject.price = "Price is required"
-        }
-        if (formType === "Create") {
-
-            if (!previewImg) {
-                errorsObject.previewImg = "Preview Image is required"
-            }
-        }
-        if (Object.keys(errorsObject).length) {
-            setValidationObject(errorsObject)
+        if (Object.keys(errorsObj).length) {
+            setValidationObject(errorsObj);
             return;
         }
+
+
+
+        // const errorsObject = {};
+
+        // if (!address) {
+        //     errorsObject.address = "Address is required"
+        // }
+        // if (!city) {
+        //     errorsObject.city = "City is required"
+        // }
+        // if (!state) {
+        //     errorsObject.state = "State is required"
+        // }
+        // // if (!lng) {
+        // //     errorsObject.lng = "Long required"
+        // // }
+        // // if (!lat) {
+        // //     errorsObject.lat = "Lat required"
+        // // }
+        // if (!country) {
+        //     errorsObject.country = "Country is required"
+        // }
+        // if (!name) {
+        //     errorsObject.name = "Name is required"
+        // }
+        // if (description.length < 30) {
+        //     errorsObject.description = "Description needs a minimum of 30 characters"
+        // }
+        // if (!price) {
+        //     errorsObject.price = "Price is required"
+        // }
+        // if (formType === "Create") {
+
+        //     if (!previewImg) {
+        //         errorsObject.previewImg = "Preview Image is required"
+        //     }
+        // }
+        // if (Object.keys(errorsObject).length) {
+        //     setValidationObject(errorsObject)
+        //     return;
+        // }
 
 
         const imageUrls = [previewImg, image1, image3, image4];
@@ -156,6 +182,19 @@ export default function SpotForm({ formType, spotId }) {
         }
     };
 
+    const solveError = (validationField) => {
+        setValidationObject((prev) => {
+            const newObj = { ...prev };
+            delete newObj[validationField];
+            return newObj;
+        });
+    };
+
+    const handleInputChange = (setterFunction, validationField) => (e) => {
+        setterFunction(e.target.value);
+        solveError(validationField);
+    };
+
     return (
         <div className="form-page-container">
             <form className="form-one-container"
@@ -178,7 +217,8 @@ export default function SpotForm({ formType, spotId }) {
                             className="fix-width"
                             placeholder="Country"
                             value={country}
-                            onChange={(e) => setCountry(e.target.value)}
+                            // onChange={(e) => setCountry(e.target.value)}
+                            onChange={handleInputChange(setCountry, "country")}
                             pattern="[^0-9]*"
                             title="Country should only contain letters"
                         />
@@ -195,7 +235,8 @@ export default function SpotForm({ formType, spotId }) {
                             className="fix-width"
                             placeholder="Address"
                             value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            // onChange={(e) => setAddress(e.target.value)}
+                            onChange={handleInputChange(setAddress, "address")}
 
                         />
                     </label>
@@ -212,7 +253,8 @@ export default function SpotForm({ formType, spotId }) {
                                 className="city-city-bang-bang"
                                 placeholder="City"
                                 value={city}
-                                onChange={(e) => setCity(e.target.value)}
+                                // onChange={(e) => setCity(e.target.value)}
+                                onChange={handleInputChange(setCity, "city")}
                                 pattern="[^0-9]*"
                                 title="City should only contain letters"
                             />
@@ -228,13 +270,14 @@ export default function SpotForm({ formType, spotId }) {
                                 name="state"
                                 placeholder="State"
                                 value={state}
-                                onChange={(e) => setState(e.target.value)}
+                                // onChange={(e) => setState(e.target.value)}
+                                onChange={handleInputChange(setState, "state")}
                                 pattern="[^0-9]*"
                                 title="State should only contain letters"
                             />
                         </label>
                     </div>
-                    <div className="city-state-inputs">
+                    {/* <div className="city-state-inputs">
                         <label>
                             <div className="error">
                                 <p>Latitude</p>
@@ -264,7 +307,7 @@ export default function SpotForm({ formType, spotId }) {
                                 onChange={(e) => setLng(e.target.value)}
                             />
                         </label>
-                    </div>
+                    </div> */}
                     <div className="describe-guests">
                         <hr></hr>
                         <h2>Describe your place to guests</h2>
@@ -274,7 +317,8 @@ export default function SpotForm({ formType, spotId }) {
                             name="description"
                             placeholder="Please write at least 30 characters"
                             value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            // onChange={(e) => setDescription(e.target.value)}
+                            onChange={handleInputChange(setDescription, "description")}
                         />
                         {validationObject.description && <p
                             className="desc-errors"> {validationObject.description}</p>}
@@ -289,7 +333,8 @@ export default function SpotForm({ formType, spotId }) {
                             className="fix-width-one"
                             placeholder="Name of your spot"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            // onChange={(e) => setName(e.target.value)}
+                            onChange={handleInputChange(setName, "name")}
                         />
                         {validationObject.name && <p
                             className="name-errors"> {validationObject.name}</p>}
@@ -306,7 +351,8 @@ export default function SpotForm({ formType, spotId }) {
                                 className="fix-width"
                                 placeholder="Price per night (USD)"
                                 value={price}
-                                onChange={(e) => setPrice(e.target.value)}
+                                // onChange={(e) => setPrice(e.target.value)}
+                                onChange={handleInputChange(setPrice, "price")}
                             />
                         </div>
                         {validationObject.price && <p
@@ -320,13 +366,14 @@ export default function SpotForm({ formType, spotId }) {
                             <p>Submit a link to at least one photo to publish your spot</p>
                             <input
                                 type="url"
-                                name="previewimage"
+                                name="previewImg"
                                 placeholder="Preview image URL"
                                 value={previewImg}
-                                onChange={(e) => {
-                                    setPreviewImg(e.target.value);
-                                    clearImageError('previewImg');
-                                }}
+                                // onChange={(e) => {
+                                //     setPreviewImg(e.target.value);
+                                //     clearImageError('previewImg');
+                                // }}
+                                onChange={handleInputChange(setPreviewImg, "previewImg")}
                             />
                             {validationObject.previewImg && <p
                                 className="photo-errors"> {validationObject.previewImg}</p>}
@@ -335,10 +382,11 @@ export default function SpotForm({ formType, spotId }) {
                                 name="image1"
                                 placeholder="Image URL"
                                 value={image1}
-                                onChange={(e) => {
-                                    setImage1(e.target.value);
-                                    clearImageError('image1');
-                                }}
+                                // onChange={(e) => {
+                                //     setImage1(e.target.value);
+                                //     clearImageError('image1');
+                                // }}
+                                onChange={handleInputChange(setImage1, "image1")}
                             />
                             {validationObject.image1 && <p
                                 className="photo-errors"> {validationObject.image1}</p>}
@@ -347,10 +395,11 @@ export default function SpotForm({ formType, spotId }) {
                                 name="image2"
                                 placeholder="Image URL"
                                 value={image2}
-                                onChange={(e) => {
-                                    setImage2(e.target.value);
-                                    clearImageError('image2');
-                                }}
+                                // onChange={(e) => {
+                                //     setImage2(e.target.value);
+                                //     clearImageError('image2');
+                                // }}
+                                onChange={handleInputChange(setImage2, "image2")}
                             />
                             {validationObject.image2 && <p
                                 className="photo-errors"> {validationObject.image2}</p>}
@@ -359,22 +408,24 @@ export default function SpotForm({ formType, spotId }) {
                                 name="image3"
                                 placeholder="Image URL"
                                 value={image3}
-                                onChange={(e) => {
-                                    setImage3(e.target.value);
-                                    clearImageError('image3');
-                                }}
+                                // onChange={(e) => {
+                                //     setImage3(e.target.value);
+                                //     clearImageError('image3');
+                                // }}
+                                onChange={handleInputChange(setImage3, "image3")}
                             />
                             {validationObject.image3 && <p
                                 className="photo-errors"> {validationObject.image3}</p>}
                             <input
                                 type="url"
-                                name="previewimage"
+                                name="image4"
                                 placeholder="Image URL"
                                 value={image4}
-                                onChange={(e) => {
-                                    setImage4(e.target.value);
-                                    clearImageError('image4');
-                                }}
+                                // onChange={(e) => {
+                                //     setImage4(e.target.value);
+                                //     clearImageError('image4');
+                                // }}
+                                onChange={handleInputChange(setImage4, "image4")}
                             />
                             {validationObject.image4 && <p
                                 className="photo-errors"> {validationObject.image4}</p>}
