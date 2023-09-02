@@ -69,28 +69,22 @@ function ProfileButton({ user }) {
             </>
           ) : (
             <>
-              <li>
-                <OpenModalMenuItem
-                  itemText="Log In"
-                  onItemClick={closeMenu}
-                  modalComponent={<LoginFormModal />}
-                />
-              </li>
-              <li>
-                <OpenModalMenuItem
-                  itemText="Sign Up"
-                  onItemClick={closeMenu}
-                  modalComponent={<SignupFormModal />}
-                />
-              </li>
-              <li>
-                <button className="buttons" onClick={(e) => {
-                  const credential = "Demo-lition"
-                  const password = "password"
-                  closeMenu()
-                  return dispatch(sessionActions.login({ credential, password }))
-                }}>Demo User</button>
-              </li>
+              <div className="login-menuu">
+                <li>
+                  <OpenModalMenuItem
+                    itemText="Log In"
+                    onItemClick={closeMenu}
+                    modalComponent={<LoginFormModal />}
+                  />
+                </li>
+                <li>
+                  <OpenModalMenuItem
+                    itemText="Sign Up"
+                    onItemClick={closeMenu}
+                    modalComponent={<SignupFormModal />}
+                  />
+                </li>
+              </div>
             </>
           )}
         </ul>

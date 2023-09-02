@@ -53,8 +53,6 @@ export default function SpotDetails() {
         return formatter.format(date);
     };
 
-
-
     return (
         <>
             <div className="detail-container">
@@ -113,7 +111,7 @@ export default function SpotDetails() {
                             <p className="datedate"> {fixDate(review.createdAt)} </p>
                         </div>
                         <p className="pushin-p"> "{review.review}" </p>
-                        {review.userId === sessionUser.id && <OpenModalButton  buttonText="Delete" modalComponent={<DeleteReview reviewId={review.id} spotId={thisSpot.id} setReloadPage={setReloadPage} />} />}
+                        {review.userId === sessionUser.id && <OpenModalButton buttonText="Delete" modalComponent={<DeleteReview reviewId={review.id} spotId={thisSpot.id} setReloadPage={setReloadPage} />} />}
                     </div>
                 )))) : (<div className="be-the-first"> Be the first to post a review! </div>)}
             </div>
