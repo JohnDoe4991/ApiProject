@@ -30,53 +30,53 @@ export default function GetAllSpots({ userSpots = false }) {
 
     return (
         <>
-            <div>
+            <div className="H-one">
                 {userSpots && (
                     <h1 className="manager-spot">Manage Your Spots</h1>
                 )}
-                <div className="spots-main-container">
-                    {(userSpots && sessionUser) && (noShow === null || noShow.length <= 0) && (
-                        <div className="owner-div manage-create-a-new-spot">
-                            <button className="owner-btn create-new-spot-btn">
-                                <NavLink to="/spots/new" className="create-new-spot-owner" style={{ textDecoration: "none", color: "black", fontWeight: "bold" }}>Create a New Spot</NavLink>
-                            </button>
-                        </div>
-                    )}
-                    {spotShow && spotShow.map((spot) => (
-                        <div>
-                            <Link
-                                key={spot.id}
-                                to={`/spots/${spot.id}`}
-                                style={{ textDecoration: "none", color: "var(--black)" }}
-                            >
-                                <div className={`spot-container ${userSpots ? "noShow" : ""}`} title={spot.name}>
-                                    <img
-                                        src={spot.previewImage}
-                                        className="spot-img"
-                                        alt={spot.name}
-                                    />
-                                    <div className="spot-info-flex">
+            </div>
+            <div className="spots-main-container">
+                {(userSpots && sessionUser) && (noShow === null || noShow.length <= 0) && (
+                    <div className="owner-div manage-create-a-new-spot">
+                        <button className="owner-btn create-new-spot-btn">
+                            <NavLink to="/spots/new" className="create-new-spot-owner" style={{ textDecoration: "none", color: "black", fontWeight: "bold" }}>Create a New Spot</NavLink>
+                        </button>
+                    </div>
+                )}
+                {spotShow && spotShow.map((spot) => (
+                    <div>
+                        <Link
+                            key={spot.id}
+                            to={`/spots/${spot.id}`}
+                            style={{ textDecoration: "none", color: "var(--black)" }}
+                        >
+                            <div className={`spot-container ${userSpots ? "noShow" : ""}`} title={spot.name}>
+                                <img
+                                    src={spot.previewImage}
+                                    className="spot-img"
+                                    alt={spot.name}
+                                />
+                                <div className="spot-info-flex">
 
-                                        <div className="spot-city-state-rating">
-                                            <p>{`${spot.city}, ${spot.state}`}</p>
-                                            <p className="night-price">
-                                                <span className="price">${spot.price}</span> <span className="night-text">night</span>
-                                            </p>
-                                        </div>
-                                        {spot.avgRating > 0 && <p className="rating1">★{spot.avgRating.toFixed(1)}</p>}
-                                        {!spot.avgRating && <p className="new1">★New</p>}
+                                    <div className="spot-city-state-rating">
+                                        <p>{`${spot.city}, ${spot.state}`}</p>
+                                        <p className="night-price">
+                                            <span className="price">${spot.price}</span> <span className="night-text">night</span>
+                                        </p>
                                     </div>
+                                    {spot.avgRating > 0 && <p className="rating1">★{spot.avgRating.toFixed(1)}</p>}
+                                    {!spot.avgRating && <p className="new1">★New</p>}
                                 </div>
-                            </Link>
-                            {userSpots && <div className="manage-buttons">
-                                <div className="update-delete" >
-                                    <button onClick={(e) => { history.push(`/spots/edit/${spot.id}`) }}>Update</button>
-                                    <OpenModalButton className="delete-it" buttonText="Delete" modalComponent={<DeleteSpot spotId={spot.id} />} />
-                                </div>
-                            </div>}
-                        </div>
-                    ))}
-                </div>
+                            </div>
+                        </Link>
+                        {userSpots && <div className="manage-buttons">
+                            <div className="update-delete" >
+                                <button onClick={(e) => { history.push(`/spots/edit/${spot.id}`) }}>Update</button>
+                                <OpenModalButton className="delete-it" buttonText="Delete" modalComponent={<DeleteSpot spotId={spot.id} />} />
+                            </div>
+                        </div>}
+                    </div>
+                ))}
             </div>
         </>
     );

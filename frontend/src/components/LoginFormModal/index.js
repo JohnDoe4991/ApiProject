@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
+import { useHistory } from "react-router-dom";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -10,13 +11,39 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  const ulRef = useRef();
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleModalClose = () => {
-     setCredential("");
-     setPassword("");
-     setErrors({});
-     closeModal();
+    setCredential("");
+    setPassword("");
+    setErrors({});
+    closeModal();
   };
+
+  const history = useHistory();
+
+  const openMenu = () => {
+    if (showMenu) return;
+    setShowMenu(true);
+  };
+
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const closeMenu = (e) => {
+      if (!ulRef.current.contains(e.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('click', closeMenu);
+
+    return () => document.removeEventListener("click", closeMenu);
+  }, [showMenu]);
+
+  const closeMenu = () => setShowMenu(false);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -63,12 +90,16 @@ function LoginFormModal() {
           {errors.password && <p className="errors">{errors.password}</p>}
         </div>
         <button type="submit" disabled={isLoginDisabled()}>Log In</button>
+        <button className="buttons-login" onClick={(e) => {
+          const credential = "Demo-lition"
+          const password = "password"
+          closeMenu()
+          closeModal()
+          return dispatch(sessionActions.login({ credential, password }))
+        }}>Login as Demo User</button>
       </form>
     </>
   );
 }
 
 export default LoginFormModal;
-
-
-
