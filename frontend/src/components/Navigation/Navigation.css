@@ -1,14 +1,14 @@
-/* Nav.css */
+
 .navBar-container {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 12px 0;
-  /* Prevent horizontal scroll */
+
 }
 
 .navBar-inner-container {
   display: flex;
-  width: 100%;
+  width: 1002px;
   justify-content: space-between;
   padding: 0 20px;
   box-sizing: border-box;
@@ -70,13 +70,13 @@ border: 2px solid rgb(0, 0, 0);
 }
 
 
-/* Styles for the dropdown in the navigation */
+
 .navBar-far-right {
   text-align: right;
   list-style-type: none;
   display: inline-block;
 }
-/* ProfileButton.css */
+
 .profile-dropdown-container {
   position: relative;
 }
@@ -117,7 +117,7 @@ border: 2px solid rgb(0, 0, 0);
   top: calc(100% + 5px);
   left: 50%;
   transform: translateX(-50%);
-  width: 150px; /* Adjust the width as needed */
+  width: 105px;
   border-radius: 5px;
 
   box-shadow: 0 2px 4px pink;
@@ -129,7 +129,6 @@ border: 2px solid rgb(0, 0, 0);
 
 .profile-dropdown li {
   line-height: 30px;
-  padding: 5px 20px;
   cursor: pointer;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
@@ -259,4 +258,10 @@ border: 2px solid rgb(0, 0, 0);
 
 .wazzzup{
   margin-right: 36px;
+}
+
+.login-menuu li{
+  display:flex;
+  align-items:center;
+  margin-left:17px;
 }

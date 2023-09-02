@@ -1,8 +1,22 @@
 .spots-main-container {
     list-style-type: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    max-width: 1002px;
     gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 17px;
+    align-items: flex-start;
+    width: 1002px;
+  }
+
+  .da-spots{
+    list-style-type: none;
+    display: flex;
+    max-width: 1002px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 17px;
   }
 
   .spot-container {
@@ -24,7 +38,7 @@
 
 
   .spot-img {
-    width: 100%;
+    width: 223px;
     height: 200px;
     object-fit: cover;
     border-radius: 10px;
@@ -122,4 +136,19 @@
 .manage-spots-h1-tag {
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-weight: normal;
+  margin-right: 736px;
+}
+
+.spot-container.noShow {
+  list-style-type: none;
+    display: flex;
+    max-width: 1002px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 17px;
+    align-items: flex-start;
+    width: 221px;
+    margin-left: -369px;
+    margin-left: -1px;
 }
