@@ -73,46 +73,37 @@ export const getDetailsThunk = (spotId) => async (dispatch) => {
   }
 };
 
-const createSpot = async (spot) => {
-  const response = await csrfFetch("/api/spots", {
+export const createSpotThunk = (newSpot, newSpotImage, sessionUser) => async (dispatch) => {
+
+  const res = await csrfFetch("/api/spots", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(spot),
-  });
+    body: JSON.stringify(newSpot),
+  })
 
-  if (!response.ok) throw new Error('Failed to create spot');
+  if (res.ok) {
+    const newlyCreateSpot = await res.json();
 
-  return response.json();
-}
-
-const createSpotImage = async (spotId, imageObj) => {
-  const response = await csrfFetch(`/api/spots/${spotId}/images`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(imageObj),
-  });
-
-  if (!response.ok) throw new Error(`Failed to upload image for spotId: ${spotId}`);
-
-  return response.json();
-}
-
-export const createSpotThunk = (newSpot, newSpotImage, sessionUser,) => async (dispatch) => {
-  try {
-    const newlyCreateSpot = await createSpot(newSpot);
-
-    const newPhoto = await Promise.all(newSpotImage.map(imageObj => createSpotImage(newlyCreateSpot.id, imageObj)));
-
-    newlyCreateSpot.SpotImages = newPhoto;
+    const newImagesRes = await Promise.all(newSpotImage.map(async (imageObj) => {
+      const imageRes = await csrfFetch(`/api/spots/${newlyCreateSpot.id}/images`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(imageObj),
+      });
+      if (imageRes.ok) {
+        const imageData = await imageRes.json();
+        return imageData;
+      }
+    }));
+    newlyCreateSpot.SpotImages = newImagesRes;
     newlyCreateSpot.creatorName = sessionUser.username;
-
     dispatch(actionCreateSpot(newlyCreateSpot));
     return newlyCreateSpot;
-  } catch (error) {
-    console.error("Error in createSpotThunk:", error);
-    return { error: error.message };
+  } else {
+    const errors = res.json();
+    return errors;
   }
-};
+}
 
 //Delete Thunk
 
