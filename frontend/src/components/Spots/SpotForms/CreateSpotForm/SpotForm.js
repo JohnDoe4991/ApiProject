@@ -204,7 +204,7 @@ export default function SpotForm({ formType, spotId }) {
                         {formType === "Create" ? "Create a new Spot" : "Update your Spot"}
                     </h1>
                     <h2>Where's your place located?</h2>
-                    <p>Guests will only get your exact address once they booked a reservation</p>
+                    <p className="boo-guests">Guests will only get your exact address once they booked a reservation</p>
                     <label>
                         <div className="error">
                             <p>Country</p>
@@ -269,6 +269,7 @@ export default function SpotForm({ formType, spotId }) {
                                 type="text"
                                 name="state"
                                 placeholder="State"
+                                className="state-input"
                                 value={state}
                                 // onChange={(e) => setState(e.target.value)}
                                 onChange={handleInputChange(setState, "state")}
