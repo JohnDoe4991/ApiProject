@@ -110,6 +110,8 @@ width: 426px
 
 .fix-width {
     width: 426px;
+    height: 23px
+;
 }
 
 .fix-width-one {
@@ -119,6 +121,7 @@ width: 426px
 
 .city-city-bang-bang{
     width: 241px;
+    height:23px;
 }
 
 .comma {
@@ -169,4 +172,17 @@ width: 426px
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 10pt;
     margin:0;
+}
+
+.set-straight label{
+   display: block;
+   height: 68px;
+}
+
+.state-input{
+    height: 23px;
+}
+
+.boo-guests {
+    margin-bottom: 0px;
 }
