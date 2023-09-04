@@ -331,7 +331,8 @@ router.get('/:spotId/reviews', async (req, res) => {
                 attributes: ['id', 'url']
             },
         ],
-        where: { spotId: req.params.spotId }
+        where: { spotId: req.params.spotId },
+        order: [['createdAt', 'DESC']]
     };
     const reviews = await Review.findAll(options);
 
