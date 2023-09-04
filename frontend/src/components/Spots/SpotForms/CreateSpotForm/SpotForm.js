@@ -439,7 +439,8 @@ export default function SpotForm({ formType, spotId }) {
                             type="submit"
                             disabled={Object.keys(validationObject).length > 0}
                         >
-                            Create spot</button>
+                            {formType === "Create" ? "Create Spot" : "Update Spot"}
+                        </button>
                     </div>
                 </div>
             </form >
