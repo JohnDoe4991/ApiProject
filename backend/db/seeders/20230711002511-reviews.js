@@ -12,12 +12,6 @@ module.exports = {
     await Review.bulkCreate([
       {
         spotId: 1,
-        userId: 2,
-        review: "Decent spot, could be better.",
-        stars: 3
-      },
-      {
-        spotId: 1,
         userId: 3,
         review: "Not worth the hype, sadly.",
         stars: 2
@@ -66,12 +60,6 @@ module.exports = {
       },
       {
         spotId: 2,
-        userId: 3,
-        review: "Mediocre experience, expected more.",
-        stars: 2
-      },
-      {
-        spotId: 2,
         userId: 4,
         review: "Had a terrible time. Disappointing.",
         stars: 1
@@ -114,18 +102,6 @@ module.exports = {
       },
       {
         spotId: 3,
-        userId: 3,
-        review: "Nice place to visit, enjoyed the ambiance.",
-        stars: 3
-      },
-      {
-        spotId: 3,
-        userId: 4,
-        review: "Solid experience. Worth checking out.",
-        stars: 4
-      },
-      {
-        spotId: 3,
         userId: 5,
         review: "Loved every moment. Great memories.",
         stars: 5
@@ -164,18 +140,6 @@ module.exports = {
         spotId: 4,
         userId: 3,
         review: "Not my cup of tea, but others might like it.",
-        stars: 2
-      },
-      {
-        spotId: 4,
-        userId: 4,
-        review: "Average experience. Didn't stand out.",
-        stars: 3
-      },
-      {
-        spotId: 4,
-        userId: 5,
-        review: "Didn't meet my expectations. Just okay.",
         stars: 2
       },
       {
