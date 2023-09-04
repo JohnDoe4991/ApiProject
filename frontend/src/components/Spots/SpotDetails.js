@@ -224,6 +224,7 @@ export default function SpotDetails() {
                 <h4><div className="rating-reviews-two">
                     {thisSpot.avgStarRating > 0 && <p className="rating-two">★{thisSpot.avgStarRating.toFixed(1)}</p>}
                     {!thisSpot.avgStarRating && <p className="new-two">★New</p>}
+                    {thisSpot.numReviews !== undefined && thisSpot.numReviews === 1 && (<h3>· {"    "} {thisSpot.numReviews} {"    "}Review</h3>)}
                     {thisSpot && thisSpot.numReviews !== undefined && thisSpot.numReviews > 1 && <h3>· {"    "} {thisSpot.numReviews} {"    "}Reviews</h3>}
                 </div></h4>
                 {(!isUserTalking) && (thisSpot.User.id !== sessionUser.id) && <div className="create-Review">
