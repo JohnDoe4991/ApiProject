@@ -216,6 +216,9 @@ margin-top:3px;
     cursor:pointer;
   }
 
+  .bottom-reviews button:hover {
+    cursor:pointer;
+  }
   .bottom-reviews button {
     margin-left: 13px;
     height: 26px;
